@@ -21,7 +21,7 @@ BARRIER_INIT(my_barrier, NR_TASKLETS);
 
 #include "metrics.h"
 
-#ifdef ACC_IN_MRAM
+#ifdef DATA_IN_MRAM
 uint32_t __mram_noinit bank[N_ACCOUNTS];
 #else
 uint32_t bank[N_ACCOUNTS];
@@ -36,13 +36,7 @@ void check_total();
 
 int main()
 {
-    TYPE_ACC Tx *tx;
-#ifndef TX_IN_MRAM
-    Tx tx_wram;
-    tx = &tx_wram;
-#else
-    tx = &tx_mram[tid]
-#endif
+    TYPE Tx *tx;
     int tid;
     uint32_t ra, rb, rc, rd;
     uint32_t a, b, c, d;
@@ -50,6 +44,13 @@ int main()
     
     s = (uint64_t)me();
     tid = me();
+
+#ifndef TX_IN_MRAM
+    Tx tx_wram;
+    tx = &tx_wram;
+#else
+    tx = &tx_mram[tid]
+#endif
 
     TM_INIT(tx, tid);
 

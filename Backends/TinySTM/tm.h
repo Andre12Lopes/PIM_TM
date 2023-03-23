@@ -33,6 +33,13 @@ typedef stm_tx_t Tx;
         continue;                                                                        \
     }
 
+#define TM_STORE_LOOP(tx, addr, value)                                                   \
+    stm_store(tx, addr, value);                                                          \
+    if ((tx)->status == 4)                                                               \
+    {                                                                                    \
+        break;                                                                           \
+    }
+
 #define TM_COMMIT(tx)                                                                    \
     stm_commit(tx);                                                                      \
     if ((tx)->status != 4)                                                               \

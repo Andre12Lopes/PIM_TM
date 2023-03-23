@@ -3,7 +3,7 @@
 
 using namespace dpu;
 
-int main()
+int main(void)
 {
 	std::vector<std::vector<uint32_t>> nbCycles(1);
 	std::vector<std::vector<uint32_t>> clocksPerSec(1);
@@ -74,6 +74,7 @@ int main()
 
         long aborts = nAborts.front().front();
 
+        // std::cout << "N threads" <<
         std::cout << NR_TASKLETS
                   << "\t" << nTransactions.front().front() 
                   << "\t" << time << "\t" 
