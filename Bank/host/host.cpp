@@ -3,11 +3,12 @@
 
 using namespace dpu;
 
-int main()
+int
+main()
 {
-	std::vector<std::vector<uint32_t>> nbCycles(1);
-	std::vector<std::vector<uint32_t>> clocksPerSec(1);
-	std::vector<std::vector<uint32_t>> nAborts(1);
+    std::vector<std::vector<uint32_t>> nbCycles(1);
+    std::vector<std::vector<uint32_t>> clocksPerSec(1);
+    std::vector<std::vector<uint32_t>> nAborts(1);
     std::vector<std::vector<uint32_t>> nTransactions(1);
 
     std::vector<std::vector<uint32_t>> nbProcessCycles(1);
@@ -28,13 +29,13 @@ int main()
         dpu.exec();
 
         nbCycles.front().resize(1);
-    	dpu.copy(nbCycles, "nb_cycles");
+        dpu.copy(nbCycles, "nb_cycles");
 
         clocksPerSec.front().resize(1);
-    	dpu.copy(clocksPerSec, "CLOCKS_PER_SEC");
+        dpu.copy(clocksPerSec, "CLOCKS_PER_SEC");
 
-    	nAborts.front().resize(1);
-    	dpu.copy(nAborts, "n_aborts");
+        nAborts.front().resize(1);
+        dpu.copy(nAborts, "n_aborts");
 
         nTransactions.front().resize(1);
         dpu.copy(nTransactions, "n_trans");
@@ -60,29 +61,38 @@ int main()
         nbWastedCycles.front().resize(1);
         dpu.copy(nbWastedCycles, "nb_wasted_cycles");
 
-        double time = (double) nbCycles.front().front() / clocksPerSec.front().front();
+        double time = (double)nbCycles.front().front() / clocksPerSec.front().front();
 
-        double process_time = (double) nbProcessCycles.front().front() / clocksPerSec.front().front();
-        double process_read_time = (double) nbProcessReadCycles.front().front() / clocksPerSec.front().front();
-        double process_write_time = (double) nbProcessWriteCycles.front().front() / clocksPerSec.front().front();
-        double process_validation_time = (double) nbProcessValidationCycles.front().front() / clocksPerSec.front().front();
+        double process_time =
+            (double)nbProcessCycles.front().front() / clocksPerSec.front().front();
+        double process_read_time =
+            (double)nbProcessReadCycles.front().front() / clocksPerSec.front().front();
+        double process_write_time =
+            (double)nbProcessWriteCycles.front().front() / clocksPerSec.front().front();
+        double process_validation_time =
+            (double)nbProcessValidationCycles.front().front() /
+            clocksPerSec.front().front();
 
-        double commit_time = (double) nbCommitCycles.front().front() / clocksPerSec.front().front();
-        double commit_validation_time = (double) nbCommitValidationCycles.front().front() / clocksPerSec.front().front();
+        double commit_time =
+            (double)nbCommitCycles.front().front() / clocksPerSec.front().front();
+        double commit_validation_time = (double)nbCommitValidationCycles.front().front() /
+                                        clocksPerSec.front().front();
 
-        double wasted_time = (double) nbWastedCycles.front().front() / clocksPerSec.front().front();
+        double wasted_time =
+            (double)nbWastedCycles.front().front() / clocksPerSec.front().front();
 
         long aborts = nAborts.front().front();
 
-        std::cout << NR_TASKLETS
-                  << "\t" << nTransactions.front().front() 
-                  << "\t" << time << "\t" 
-                  << ((double) aborts * 100) / (aborts + nTransactions.front().front()) 
-                  << "\t" << process_read_time - process_validation_time << "\t" << process_write_time << "\t" << process_validation_time 
-                  << "\t" << process_time - (process_read_time + process_write_time + process_validation_time)
-                  << "\t" << commit_validation_time << "\t" << commit_time - commit_validation_time << "\t"
-                  << wasted_time << std::endl;
-
+        std::cout << NR_TASKLETS << "\t" << nTransactions.front().front() << "\t" << time
+                  << "\t"
+                  << ((double)aborts * 100) / (aborts + nTransactions.front().front())
+                  << "\t" << process_read_time - process_validation_time << "\t"
+                  << process_write_time << "\t" << process_validation_time << "\t"
+                  << process_time - (process_read_time + process_write_time +
+                                     process_validation_time)
+                  << "\t" << commit_validation_time << "\t"
+                  << commit_time - commit_validation_time << "\t" << wasted_time
+                  << std::endl;
     }
     catch (const DpuError &e)
     {

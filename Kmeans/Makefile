@@ -34,6 +34,8 @@ DIR 		:= $(shell mkdir -p ${BUILD_DIR})
 # Defines
 # =============================================================================
 
+DEFINES += -DNR_TASKLETS=$(NR_TASKLETS)
+
 ifdef TX_IN_MRAM
 	DEFINES += -DTX_IN_MRAM
 endif

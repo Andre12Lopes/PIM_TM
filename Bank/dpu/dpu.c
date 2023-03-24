@@ -1,47 +1,56 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
 #include <assert.h>
+#include <barrier.h>
 #include <defs.h>
 #include <mram.h>
-#include <barrier.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#include <tm.h>
 #include <random.h>
+#include <tm.h>
 
 BARRIER_INIT(my_barrier, NR_TASKLETS);
 
-#define TRANSFER        2
-#define ACCOUNT_V       1000
-#define N_TRANSACTIONS  1000
+#define TRANSFER 2
+#define ACCOUNT_V 100000
+#define N_TRANSACTIONS 100000
 
 #ifndef N_ACCOUNTS
-#define N_ACCOUNTS      800
+#define N_ACCOUNTS 800
 #endif
 
 #include "metrics.h"
 
+typedef struct
+{
+    uint32_t number;
+    uint32_t balance;
+} account_t;
+
 #ifdef DATA_IN_MRAM
-uint32_t __mram_noinit bank[N_ACCOUNTS];
+account_t __mram_noinit bank[N_ACCOUNTS];
 #else
-uint32_t bank[N_ACCOUNTS];
+account_t bank[N_ACCOUNTS];
 #endif
 
 #ifdef TX_IN_MRAM
 Tx __mram_noinit tx_mram[NR_TASKLETS];
 #endif
 
-void initialize_accounts();
-void check_total();
+void
+initialize_accounts();
+void
+check_total();
 
-int main()
+int
+main()
 {
     TYPE Tx *tx;
     int tid;
     uint32_t ra, rb, rc, rd;
     uint32_t a, b, c, d;
     uint64_t s;
-    
+
     s = (uint64_t)me();
     tid = me();
 
@@ -67,21 +76,21 @@ int main()
 
         TM_START(tx);
 
-        a = TM_LOAD(tx, &bank[ra]);
+        a = TM_LOAD(tx, &bank[ra].balance);
         a -= TRANSFER;
-        TM_STORE(tx, &bank[ra], a);
+        TM_STORE(tx, &bank[ra].balance, a);
 
-        b = TM_LOAD(tx, &bank[rb]);
+        b = TM_LOAD(tx, &bank[rb].balance);
         b += TRANSFER;
-        TM_STORE(tx, &bank[rb], b);
+        TM_STORE(tx, &bank[rb].balance, b);
 
-        c = TM_LOAD(tx, &bank[rc]);
+        c = TM_LOAD(tx, &bank[rc].balance);
         c -= TRANSFER;
-        TM_STORE(tx, &bank[rc], c);
+        TM_STORE(tx, &bank[rc].balance, c);
 
-        d = TM_LOAD(tx, &bank[rd]);
+        d = TM_LOAD(tx, &bank[rd].balance);
         d += TRANSFER;
-        TM_STORE(tx, &bank[rd], d);
+        TM_STORE(tx, &bank[rd].balance, d);
 
         TM_COMMIT(tx);
     }
@@ -89,22 +98,26 @@ int main()
     get_metrics(tx, tid);
 
     check_total();
-    
+
     return 0;
 }
 
-void initialize_accounts()
+void
+initialize_accounts()
 {
     if (me() == 0)
     {
         for (int i = 0; i < N_ACCOUNTS; ++i)
         {
-            bank[i] = ACCOUNT_V;
-        }    
+
+            bank[i].number = i + 1;
+            bank[i].balance = ACCOUNT_V;
+        }
     }
 }
 
-void check_total()
+void
+check_total()
 {
     if (me() == 0)
     {
@@ -112,8 +125,8 @@ void check_total()
         unsigned int total = 0;
         for (int i = 0; i < N_ACCOUNTS; ++i)
         {
-            printf("%d,", bank[i]);
-            total += bank[i];
+            printf("%u -> %u | ", bank[i].number, bank[i].balance);
+            total += bank[i].balance;
         }
         printf("]\n");
 

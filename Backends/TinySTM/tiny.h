@@ -1,6 +1,7 @@
 #ifndef _TINY_H_
 #define _TINY_H_
 
+#include <perfcounter.h>
 #include <stdint.h>
 
 #ifdef TX_IN_MRAM

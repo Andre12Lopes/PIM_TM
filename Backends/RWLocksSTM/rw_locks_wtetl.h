@@ -6,7 +6,7 @@
 
 #include "backoff.h"
 
-static inline void 
+static inline void
 stm_wtetl_rollback(TYPE stm_tx *tx)
 {
     TYPE w_entry_t *w;
@@ -57,7 +57,7 @@ stm_wtetl_rollback(TYPE stm_tx *tx)
     }
 #endif
 
-    SET_STATUS(tx->status, TX_ABORTED); 
+    SET_STATUS(tx->status, TX_ABORTED);
 }
 
 static inline TYPE r_entry_t *
@@ -77,7 +77,7 @@ stm_has_read_lock(TYPE stm_tx *tx, volatile stm_word_t *lock)
     return NULL;
 }
 
-static inline stm_word_t 
+static inline stm_word_t
 stm_wtetl_read(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
 {
     volatile stm_word_t *lock = NULL;
@@ -88,7 +88,7 @@ stm_wtetl_read(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
     lock = GET_LOCK_ADDR(addr);
 
     hardware_acquire_lock(lock);
-    
+
     lock_value = *lock;
     if (LOCK_GET_OWNED_WRITE(lock_value))
     {
@@ -96,7 +96,7 @@ stm_wtetl_read(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
 
         w = (TYPE w_entry_t *)LOCK_GET_W_ENTRY(lock_value);
         if (tx->w_set.entries <= w && w < tx->w_set.entries + tx->w_set.nb_entries)
-        {   
+        {
             return *addr;
         }
 
@@ -118,7 +118,7 @@ stm_wtetl_read(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
     {
         *lock = LOCK_SET_READ;
     }
-    
+
     hardware_release_lock(lock);
 
     assert(tx->r_set.nb_entries < R_SET_SIZE);
@@ -168,7 +168,7 @@ stm_wtetl_write(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_t 
                 }
                 prev = prev->next;
             }
-            
+
             assert(tx->w_set.nb_entries < W_SET_SIZE);
 
             w = &tx->w_set.entries[tx->w_set.nb_entries++];

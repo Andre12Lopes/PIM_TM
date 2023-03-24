@@ -25,9 +25,9 @@ case $1 in
 		;;
 	* )
 		echo ""
-        echo "==================== ERROR UNKNOWN BACKEND $1 ===================="
+		echo "==================== ERROR UNKNOWN BACKEND $1 ===================="
 		echo ""
-        exit 1
+		exit 1
 		;;
 esac
 
@@ -40,17 +40,17 @@ case $2 in
 		;;
 	* )
 		echo ""
-        echo "==================== ERROR UNKNOWN BENCHMARK $2 ===================="
+		echo "==================== ERROR UNKNOWN BENCHMARK $2 ===================="
 		echo ""
-        exit 1
+		exit 1
 		;;
 esac
 
-if [[ $3 < 1 || $3 > 24 ]]; then
+if (( $3 < 1 || $3 > 24 )); then
 	echo ""
-    echo "==================== NUMBER OF TASKLETS MUST BE IN 1 .. 24 ===================="
+	echo "==================== NUMBER OF TASKLETS MUST BE IN [1 .. 24] ===================="
 	echo ""
-    exit 1
+	exit 1
 fi
 
 bash clean.sh
@@ -66,7 +66,7 @@ make $tm_flags $common_flags
 cd ../..
 
 if [[ $benchmark_folder == "Bank" ]]; then
-	bank_flags="N_ACCOUNTS=800"
+	bank_flags="N_ACCOUNTS=10"
 
 	cd $benchmark_folder
 	make $common_flags $benchmark_lib_flags $bank_flags

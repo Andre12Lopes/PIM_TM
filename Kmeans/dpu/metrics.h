@@ -14,7 +14,8 @@ __host uint32_t nb_wasted_cycles;
 __host uint32_t n_aborts;
 __host uint32_t n_trans;
 
-void start_count(int tid)
+void
+start_count(int tid)
 {
     if (tid == 0)
     {
@@ -24,7 +25,8 @@ void start_count(int tid)
     barrier_wait(&barr);
 }
 
-void get_metrics(TYPE Thread *tx, int tid, int loops)
+void
+get_metrics(TYPE Tx *tx, int tid, int loops)
 {
     barrier_wait(&barr);
     int num_transactions = NUM_OBJECTS * loops;
@@ -49,17 +51,23 @@ void get_metrics(TYPE Thread *tx, int tid, int loops)
     {
         if (me() == i)
         {
-            n_aborts += tx->Aborts;
+            n_aborts += tx->aborts;
 
-            nb_process_cycles += ((double) tx->process_cycles / (num_transactions));
-            nb_process_read_cycles += ((double) tx->total_read_cycles / (num_transactions));
-            nb_process_write_cycles += ((double) tx->total_write_cycles / (num_transactions));
-            nb_process_validation_cycles += ((double) tx->total_validation_cycles / (num_transactions));
+            nb_process_cycles += ((double)tx->process_cycles / (num_transactions));
+            nb_process_read_cycles +=
+                ((double)tx->total_read_cycles / (num_transactions));
+            nb_process_write_cycles +=
+                ((double)tx->total_write_cycles / (num_transactions));
+            nb_process_validation_cycles +=
+                ((double)tx->total_validation_cycles / (num_transactions));
 
-            nb_commit_cycles += ((double) tx->commit_cycles / (num_transactions));
-            nb_commit_validation_cycles += ((double) tx->total_commit_validation_cycles / (num_transactions));
+            nb_commit_cycles += ((double)tx->commit_cycles / (num_transactions));
+            nb_commit_validation_cycles +=
+                ((double)tx->total_commit_validation_cycles / (num_transactions));
 
-            nb_wasted_cycles += ((double) (tx->total_cycles - (tx->process_cycles + tx->commit_cycles)) / (num_transactions));
+            nb_wasted_cycles +=
+                ((double)(tx->total_cycles - (tx->process_cycles + tx->commit_cycles)) /
+                 (num_transactions));
         }
 
         barrier_wait(&barr);

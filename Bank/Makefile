@@ -34,6 +34,8 @@ DIR 		:= $(shell mkdir -p ${BUILD_DIR})
 # Defines
 # =============================================================================
 
+DEFINES += -DNR_TASKLETS=$(NR_TASKLETS)
+
 ifdef TX_IN_MRAM
 	DEFINES += -DTX_IN_MRAM
 endif
@@ -61,7 +63,7 @@ all: $(DPU_TARGET) $(HOST_TARGET)
 	$(CC) $(DPU_FLAGS) $(DEFINES) -c $< -o $@
 
 %.o: %.cpp
-	$(CC)  -c $< -o $@
+	$(CC) -c $< -o $@
 
 $(DPU_TARGET): $(DPU_OBJS)
 	$(CC) $(LDFLAGS) -DNR_TASKLETS=$(NR_TASKLETS) $^ $(LIBS) -o $@

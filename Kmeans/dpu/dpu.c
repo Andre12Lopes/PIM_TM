@@ -8,26 +8,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <tm.h>
 #include <random.h>
+#include <tm.h>
 
 BARRIER_INIT(barr, NR_TASKLETS);
 BARRIER_INIT(kmeans_barr, NR_TASKLETS);
 
-#include "metrics.h"
-
 #include "inputs/inputs_14.h"
+#include "metrics.h"
 #include "util.h"
 
 #ifndef N_CLUSTERS
-#define N_CLUSTERS              15
+#define N_CLUSTERS 15
 #endif
 
-#define MIN_N_CLUSTERS          N_CLUSTERS
-#define MAX_N_CLUSTERS          N_CLUSTERS
-#define USE_ZSCORE_TRANSFORM    0
-#define THRESHOLD               0.05
-#define CHUNK                   3
+#define MIN_N_CLUSTERS N_CLUSTERS
+#define MAX_N_CLUSTERS N_CLUSTERS
+#define USE_ZSCORE_TRANSFORM 0
+#define THRESHOLD 0.05
+#define CHUNK 3
 
 int loop;
 float delta;
@@ -43,10 +42,13 @@ __dma_aligned float cluster_centres[N_CLUSTERS][NUM_ATTRIBUTES];
 Tx __mram_noinit tx_mram[NR_TASKLETS];
 #endif
 
-float euclidian_distance(float *pt1, float *pt2);
-int find_nearest_center(float *pt, float *centers);
+float
+euclidian_distance(float *pt1, float *pt2);
+int
+find_nearest_center(float *pt, float *centers);
 
-int main()
+int
+main()
 {
     TYPE Tx *tx;
     uint64_t s;
@@ -66,13 +68,13 @@ int main()
 #else
     tx = &tx_mram[tid]
 #endif
-    
+
     TM_INIT(tx, tid);
 
     start_count(tid);
 
     // -------------------------------------------------------------------
-    
+
     if (MIN_N_CLUSTERS != MAX_N_CLUSTERS || USE_ZSCORE_TRANSFORM != 0)
     {
         assert(0);
@@ -81,23 +83,23 @@ int main()
     if (tid == 0)
     {
         /* Randomly pick cluster centers */
-        for (int i = 0; i < N_CLUSTERS; ++i) 
+        for (int i = 0; i < N_CLUSTERS; ++i)
         {
-            int n = (int)(RAND_R_FNC(s) %  NUM_OBJECTS);
+            int n = (int)(RAND_R_FNC(s) % NUM_OBJECTS);
             mram_read(attributes[n], cluster_centres[i], sizeof(cluster_centres[i]));
         }
 
         loop = 0;
 
-        for (int i = 0; i < NUM_OBJECTS; ++i) 
+        for (int i = 0; i < NUM_OBJECTS; ++i)
         {
             membership[i] = -1;
         }
 
-        for (int i = 0; i < N_CLUSTERS; ++i) 
+        for (int i = 0; i < N_CLUSTERS; ++i)
         {
             new_centers_len[i] = 0;
-            for (int j = 0; j < NUM_ATTRIBUTES; ++j) 
+            for (int j = 0; j < NUM_ATTRIBUTES; ++j)
             {
                 new_centers[i][j] = 0;
             }
@@ -116,7 +118,7 @@ int main()
             mram_read(attributes[i], tmp_point, sizeof(tmp_point));
             index = find_nearest_center(tmp_point, cluster_centres);
 
-            if (membership[i] != index) 
+            if (membership[i] != index)
             {
                 delta_per_thread[tid] += 1.0;
             }
@@ -136,10 +138,10 @@ int main()
                 TM_STORE_LOOP(tx, &new_centers[index][j], double2intp(tmp_center_attr));
             }
 
-            if (tx->status == 4) 
+            if (tx->status == 4)
             {
                 // We break out of previous loop because of an abort
-                continue; 
+                continue;
             }
 
             TM_COMMIT(tx);
@@ -151,11 +153,11 @@ int main()
         if (tid == 0)
         {
             /* Replace old cluster centers with new_centers */
-            for (int i = 0; i < N_CLUSTERS; ++i) 
+            for (int i = 0; i < N_CLUSTERS; ++i)
             {
-                for (int j = 0; j < NUM_ATTRIBUTES; ++j) 
+                for (int j = 0; j < NUM_ATTRIBUTES; ++j)
                 {
-                    if (new_centers_len[i] > 0) 
+                    if (new_centers_len[i] > 0)
                     {
                         cluster_centres[i][j] = new_centers[i][j] / new_centers_len[i];
                     }
@@ -176,19 +178,19 @@ int main()
         }
         barrier_wait(&kmeans_barr);
 
-
-    } while((delta > THRESHOLD) && (loop < 500));
+    } while ((delta > THRESHOLD) && (loop < 500));
 
     get_metrics(tx, tid, loop);
 
     return 0;
 }
 
-float euclidian_distance(float *pt1, float *pt2)
+float
+euclidian_distance(float *pt1, float *pt2)
 {
     float ans = 0.0F;
 
-    for (int i = 0; i < NUM_ATTRIBUTES; ++i) 
+    for (int i = 0; i < NUM_ATTRIBUTES; ++i)
     {
         ans += (pt1[i] - pt2[i]) * (pt1[i] - pt2[i]);
     }
@@ -196,21 +198,22 @@ float euclidian_distance(float *pt1, float *pt2)
     return ans;
 }
 
-int find_nearest_center(float *pt, float *centers)
+int
+find_nearest_center(float *pt, float *centers)
 {
     int index = -1;
     float max_dist = 3.402823466e+38F; // TODO: might be a bug
 
     /* Find the cluster center id with min distance to pt */
-    for (int i = 0; i < N_CLUSTERS; ++i) 
+    for (int i = 0; i < N_CLUSTERS; ++i)
     {
         float dist;
         dist = euclidian_distance(pt, &centers[i * NUM_ATTRIBUTES]);
-        if (dist < max_dist) 
+        if (dist < max_dist)
         {
             max_dist = dist;
             index = i;
-            if (max_dist == 0) 
+            if (max_dist == 0)
             {
                 break;
             }

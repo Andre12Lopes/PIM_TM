@@ -14,7 +14,7 @@ __host uint32_t nb_wasted_cycles;
 __host uint32_t n_aborts;
 __host uint32_t n_trans;
 
-void 
+void
 start_count(int tid)
 {
     if (tid == 0)
@@ -27,8 +27,8 @@ start_count(int tid)
     barrier_wait(&my_barrier);
 }
 
-void 
-get_metrics(TYPE Thread *tx, int tid)
+void
+get_metrics(TYPE Tx *tx, int tid)
 {
     barrier_wait(&my_barrier);
 
@@ -51,15 +51,23 @@ get_metrics(TYPE Thread *tx, int tid)
         {
             n_aborts += tx->aborts;
 
-            nb_process_cycles += ((double) tx->process_cycles / (N_TRANSACTIONS * NR_TASKLETS));
-            nb_process_read_cycles += ((double) tx->total_read_cycles / (N_TRANSACTIONS * NR_TASKLETS));
-            nb_process_write_cycles += ((double) tx->total_write_cycles / (N_TRANSACTIONS * NR_TASKLETS));
-            nb_process_validation_cycles += ((double) tx->total_validation_cycles / (N_TRANSACTIONS * NR_TASKLETS));
+            nb_process_cycles +=
+                ((double)tx->process_cycles / (N_TRANSACTIONS * NR_TASKLETS));
+            nb_process_read_cycles +=
+                ((double)tx->total_read_cycles / (N_TRANSACTIONS * NR_TASKLETS));
+            nb_process_write_cycles +=
+                ((double)tx->total_write_cycles / (N_TRANSACTIONS * NR_TASKLETS));
+            nb_process_validation_cycles +=
+                ((double)tx->total_validation_cycles / (N_TRANSACTIONS * NR_TASKLETS));
 
-            nb_commit_cycles += ((double) tx->commit_cycles / (N_TRANSACTIONS * NR_TASKLETS));
-            nb_commit_validation_cycles += ((double) tx->total_commit_validation_cycles / (N_TRANSACTIONS * NR_TASKLETS));
+            nb_commit_cycles +=
+                ((double)tx->commit_cycles / (N_TRANSACTIONS * NR_TASKLETS));
+            nb_commit_validation_cycles += ((double)tx->total_commit_validation_cycles /
+                                            (N_TRANSACTIONS * NR_TASKLETS));
 
-            nb_wasted_cycles += ((double) (tx->total_cycles - (tx->process_cycles + tx->commit_cycles)) / (N_TRANSACTIONS * NR_TASKLETS));
+            nb_wasted_cycles +=
+                ((double)(tx->total_cycles - (tx->process_cycles + tx->commit_cycles)) /
+                 (N_TRANSACTIONS * NR_TASKLETS));
         }
 
         barrier_wait(&my_barrier);

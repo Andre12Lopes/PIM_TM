@@ -10,7 +10,7 @@
 #define TYPE
 #endif
 
-#ifdef ACC_IN_MRAM
+#ifdef DATA_IN_MRAM
 #define TYPE_ACC __mram_ptr
 #else
 #define TYPE_ACC

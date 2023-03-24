@@ -1,13 +1,13 @@
 #include <assert.h>
-#include <stdlib.h>
 #include <perfcounter.h>
+#include <stdlib.h>
 
 #include "rw_locks.h"
 #include "rw_locks_internal.h"
 
 volatile stm_word_t lock_table[LOCK_ARRAY_SIZE];
 
-void 
+void
 stm_init(TYPE stm_tx *tx, int tid)
 {
     tx->rng = tid + 1;
@@ -29,25 +29,25 @@ stm_init(TYPE stm_tx *tx, int tid)
     tx->aborts = 0;
 }
 
-void 
+void
 stm_start(TYPE stm_tx *tx)
 {
     return int_stm_start(tx);
 }
 
-stm_word_t 
+stm_word_t
 stm_load(TYPE stm_tx *tx, TYPE_ACC stm_word_t *addr)
 {
     return int_stm_load(tx, addr);
 }
 
-void 
+void
 stm_store(TYPE stm_tx *tx, TYPE_ACC stm_word_t *addr, stm_word_t value)
 {
     int_stm_store(tx, addr, value);
 }
 
-int 
+int
 stm_commit(TYPE stm_tx *tx)
 {
     return int_stm_commit(tx);

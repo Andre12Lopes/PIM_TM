@@ -19,13 +19,13 @@ typedef struct intset
 __mram_ptr intset_t *
 set_new();
 
-int 
+int
 set_contains(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val);
 
-int 
+int
 set_add(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val, int transactional);
 
-int 
+int
 set_remove(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val);
 
 #endif /* _LINKED_LIST_H_ */
