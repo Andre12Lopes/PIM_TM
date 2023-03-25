@@ -13,8 +13,8 @@ fi
 echo -e "N_THREADS\tN_TRANSACTIONS\tTIME\tN_ABORTS\tPROCESS_READ_TIME\tPROCESS_WRITE_TIME\tPROCESS_VALIDATION_TIME\tPROCESS_OTHER_TIME\tCOMMIT_VALIDATION_TIME\tCOMMIT_OTHER_TIME\tWASTED_TIME" > Results/${2^}/$1/results_$3.txt
 
 for (( i = 1; i < 13; i++ )); do
-	bash build.sh $1 $2 $3 $i
-	for (( j = 0; j < 1; j++ )); do
+	bash build.sh $1 $2 $3 $i > /dev/null
+	for (( j = 0; j < 10; j++ )); do
 		./${2^}/bin/host >> Results/${2^}/$1/results_$3.txt
 	done
 done
