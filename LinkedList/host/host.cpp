@@ -25,7 +25,7 @@ main()
     {
         auto dpu = DpuSet::allocate(1);
 
-        dpu.load("./bin/dpu");
+        dpu.load("./LinkedList/bin/dpu");
         dpu.exec();
 
         nbCycles.front().resize(1);

@@ -12,8 +12,8 @@
 BARRIER_INIT(my_barrier, NR_TASKLETS);
 
 #define TRANSFER 2
-#define ACCOUNT_V 100000
-#define N_TRANSACTIONS 100000
+#define ACCOUNT_V 1000
+#define N_TRANSACTIONS 1000
 
 #ifndef N_ACCOUNTS
 #define N_ACCOUNTS 800
@@ -58,7 +58,7 @@ main()
     Tx tx_wram;
     tx = &tx_wram;
 #else
-    tx = &tx_mram[tid]
+    tx = &tx_mram[tid];
 #endif
 
     TM_INIT(tx, tid);
@@ -121,16 +121,16 @@ check_total()
 {
     if (me() == 0)
     {
-        printf("[");
+        // printf("[");
         unsigned int total = 0;
         for (int i = 0; i < N_ACCOUNTS; ++i)
         {
-            printf("%u -> %u | ", bank[i].number, bank[i].balance);
+            // printf("%u -> %u | ", bank[i].number, bank[i].balance);
             total += bank[i].balance;
         }
-        printf("]\n");
+        // printf("]\n");
 
-        printf("TOTAL = %u\n", total);
+        // printf("TOTAL = %u\n", total);
 
         assert(total == (N_ACCOUNTS * ACCOUNT_V));
     }

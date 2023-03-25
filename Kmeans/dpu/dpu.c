@@ -66,7 +66,7 @@ main()
     Tx tx_wram;
     tx = &tx_wram;
 #else
-    tx = &tx_mram[tid]
+    tx = &tx_mram[tid];
 #endif
 
     TM_INIT(tx, tid);
