@@ -104,14 +104,14 @@ test(TYPE Tx *tx, __mram_ptr intset_t *set, uint64_t *seed, int *last)
     {
         /* Look for random value */
         val = (RAND_R_FNC(*seed) % RAND_RANGE) + 1;
-        // set_contains(tx, set, val);
-        if (set_contains(tx, set, val))
-        {
-            printf("FOUND!!\n");
-        }
-        else
-        {
-            printf("NOT FOUND!!\n");
-        }
+        set_contains(tx, set, val);
+        // if (set_contains(tx, set, val))
+        // {
+        //     printf("FOUND!!\n");
+        // }
+        // else
+        // {
+        //     printf("NOT FOUND!!\n");
+        // }
     }
 }

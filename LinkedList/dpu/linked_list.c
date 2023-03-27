@@ -63,7 +63,7 @@ set_contains(TYPE Tx *tx, __mram_ptr intset_t *set, val_t val)
 
     while (1)
     {
-        v = TM_LOAD_LOOP(tx, &(next->val));
+        v = TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)&(next->val));
 
         if (v >= val)
         {
