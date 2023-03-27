@@ -41,5 +41,5 @@ mram_malloc(size_t size)
 void
 mram_free(__mram_ptr void *ptr)
 {
-    // Nothing
+    (void) ptr;
 }
