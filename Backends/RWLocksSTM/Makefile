@@ -31,19 +31,6 @@ ifdef BACKOFF
 	DEFINES += -DBACKOFF
 endif
 
-ifdef R_SET_SIZE
-	DEFINES += -DR_SET_SIZE=$(R_SET_SIZE)
-endif
-
-ifdef W_SET_SIZE
-	DEFINES += -DW_SET_SIZE=$(W_SET_SIZE)
-endif
-
-ifdef LOCK_ARRAY_LOG_SIZE
-	DEFINES += -DLOCK_ARRAY_LOG_SIZE=$(LOCK_ARRAY_LOG_SIZE)
-endif
-
-
 # =============================================================================
 # Rules
 # =============================================================================
@@ -55,7 +42,7 @@ all: $(TMLIB)
 	$(CC) $(CFLAGS) $(DEFINES) -c $< -o $@
 
 $(TMLIB): $(OBJS)
-	$(AR) crus $@ $^
+	$(AR) crs $@ $^
 
 clean:
 	$(RM) $(TMLIB) $(OBJS)

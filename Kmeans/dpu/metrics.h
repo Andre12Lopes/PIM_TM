@@ -31,7 +31,7 @@ get_metrics(TYPE Tx *tx, int tid, int loops)
     barrier_wait(&barr);
     int num_transactions = NUM_OBJECTS * loops;
 
-    if (me() == 0)
+    if (tid == 0)
     {
         nb_cycles = perfcounter_get() - initial_time;
 
@@ -49,7 +49,7 @@ get_metrics(TYPE Tx *tx, int tid, int loops)
 
     for (int i = 0; i < NR_TASKLETS; ++i)
     {
-        if (me() == i)
+        if (tid == i)
         {
             n_aborts += tx->aborts;
 

@@ -11,23 +11,15 @@
 
 #include "linked_list.h"
 
-BARRIER_INIT(barr, NR_TASKLETS);
-
-#include "metrics.h"
-
-#ifndef
+#ifndef UPDATE_PERCENTAGE
 #define UPDATE_PERCENTAGE 0
 #endif
 
-#ifndef
 #define SET_INITIAL_SIZE 10
-#endif
-
-#ifndef
 #define RAND_RANGE 100
-#endif
-
 #define N_TRANSACTIONS 100
+
+#include "metrics.h"
 
 __mram_ptr intset_t *set;
 
@@ -45,7 +37,6 @@ main()
     uint64_t seed;
     int i = 0;
     int last = -1;
-    perfcounter_t initial_time;
 
     seed = me();
     tid = me();
@@ -71,86 +62,16 @@ main()
                 i++;
             }
         }
-
-        n_trans = N_TRANSACTIONS * NR_TASKLETS;
-        n_aborts = 0;
-
-        initial_time = perfcounter_config(COUNT_CYCLES, false);
     }
 
-    barrier_wait(&barr);
+    start_count(tid);
 
     for (int i = 0; i < N_TRANSACTIONS; ++i)
     {
         test(tx, set, &seed, &last);
     }
 
-    barrier_wait(&barr);
-
-    if (me() == 0)
-    {
-        nb_cycles = perfcounter_get() - initial_time;
-
-        nb_process_cycles = 0;
-        nb_commit_cycles = 0;
-        nb_wasted_cycles = 0;
-        nb_process_read_cycles = 0;
-        nb_process_write_cycles = 0;
-        nb_process_validation_cycles = 0;
-        nb_commit_validation_cycles = 0;
-    }
-
-    for (int i = 0; i < NR_TASKLETS; ++i)
-    {
-        if (me() == i)
-        {
-#ifdef TX_IN_MRAM
-            n_aborts += t_mram[tid].Aborts;
-
-            nb_process_cycles +=
-                ((double)t_mram[tid].process_cycles / (N_TRANSACTIONS * NR_TASKLETS));
-            nb_process_read_cycles +=
-                ((double)t_mram[tid].total_read_cycles / (N_TRANSACTIONS * NR_TASKLETS));
-            nb_process_write_cycles +=
-                ((double)t_mram[tid].total_write_cycles / (N_TRANSACTIONS * NR_TASKLETS));
-            nb_process_validation_cycles += ((double)t_mram[tid].total_validation_cycles /
-                                             (N_TRANSACTIONS * NR_TASKLETS));
-
-            nb_commit_cycles +=
-                ((double)t_mram[tid].commit_cycles / (N_TRANSACTIONS * NR_TASKLETS));
-            nb_commit_validation_cycles +=
-                ((double)t_mram[tid].total_commit_validation_cycles /
-                 (N_TRANSACTIONS * NR_TASKLETS));
-
-            nb_wasted_cycles +=
-                ((double)(t_mram[tid].total_cycles -
-                          (t_mram[tid].process_cycles + t_mram[tid].commit_cycles)) /
-                 (N_TRANSACTIONS * NR_TASKLETS));
-#else
-            n_aborts += tx.Aborts;
-
-            nb_process_cycles +=
-                ((double)tx.process_cycles / (N_TRANSACTIONS * NR_TASKLETS));
-            nb_process_read_cycles +=
-                ((double)tx.total_read_cycles / (N_TRANSACTIONS * NR_TASKLETS));
-            nb_process_write_cycles +=
-                ((double)tx.total_write_cycles / (N_TRANSACTIONS * NR_TASKLETS));
-            nb_process_validation_cycles +=
-                ((double)tx.total_validation_cycles / (N_TRANSACTIONS * NR_TASKLETS));
-
-            nb_commit_cycles +=
-                ((double)tx.commit_cycles / (N_TRANSACTIONS * NR_TASKLETS));
-            nb_commit_validation_cycles += ((double)tx.total_commit_validation_cycles /
-                                            (N_TRANSACTIONS * NR_TASKLETS));
-
-            nb_wasted_cycles +=
-                ((double)(tx.total_cycles - (tx.process_cycles + tx.commit_cycles)) /
-                 (N_TRANSACTIONS * NR_TASKLETS));
-#endif
-        }
-
-        barrier_wait(&barr);
-    }
+    get_metrics(tx, tid);
 
     return 0;
 }
@@ -183,14 +104,14 @@ test(TYPE Tx *tx, __mram_ptr intset_t *set, uint64_t *seed, int *last)
     {
         /* Look for random value */
         val = (RAND_R_FNC(*seed) % RAND_RANGE) + 1;
-        set_contains(tx, set, val);
-        // if (set_contains(tx, set, val))
-        // {
-        //     printf("FOUND!!\n");
-        // }
-        // else
-        // {
-        //     printf("NOT FOUND!!\n");
-        // }
+        // set_contains(tx, set, val);
+        if (set_contains(tx, set, val))
+        {
+            printf("FOUND!!\n");
+        }
+        else
+        {
+            printf("NOT FOUND!!\n");
+        }
     }
 }

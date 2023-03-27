@@ -20,12 +20,12 @@ __mram_ptr intset_t *
 set_new();
 
 int
-set_contains(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val);
+set_contains(TYPE Tx *tx, __mram_ptr intset_t *set, val_t val);
 
 int
-set_add(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val, int transactional);
+set_add(TYPE Tx *tx, __mram_ptr intset_t *set, val_t val, int transactional);
 
 int
-set_remove(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val);
+set_remove(TYPE Tx *tx, __mram_ptr intset_t *set, val_t val);
 
 #endif /* _LINKED_LIST_H_ */

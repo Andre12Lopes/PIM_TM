@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-// Might need to include <tm.h>
+#include <tm.h>
 
 #include <dpu_alloc.h>
 
@@ -18,6 +18,7 @@ new_node(val_t val, __mram_ptr node_t *next, int transactional)
 {
     __mram_ptr node_t *node;
 
+    (void)transactional;
     node = (__mram_ptr node_t *)mram_malloc(sizeof(node_t));
 
     if (node == NULL)
@@ -50,15 +51,15 @@ set_new()
 }
 
 int
-set_contains(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val)
+set_contains(TYPE Tx *tx, __mram_ptr intset_t *set, val_t val)
 {
     __mram_ptr node_t *prev, *next;
     int result;
     val_t v;
 
     TM_START(tx);
-    prev = (__mram_ptr node_t *)TM_LOAD(tx, &(set->head));
-    next = (__mram_ptr node_t *)TM_LOAD(tx, &(prev->next));
+    prev = (__mram_ptr node_t *)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(set->head));
+    next = (__mram_ptr node_t *)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(prev->next));
 
     while (1)
     {
@@ -70,7 +71,7 @@ set_contains(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val)
         }
 
         prev = next;
-        next = (__mram_ptr node_t *)TM_LOAD_LOOP(tx, &(prev->next));
+        next = (__mram_ptr node_t *)TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)&(prev->next));
     }
 
     if (tx->status == 4)
@@ -85,7 +86,7 @@ set_contains(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val)
 }
 
 int
-set_add(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val, int transactional)
+set_add(TYPE Tx *tx, __mram_ptr intset_t *set, val_t val, int transactional)
 {
     __mram_ptr node_t *prev, *next;
     int result;
@@ -109,19 +110,19 @@ set_add(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val, int transactional)
     else
     {
         TM_START(tx);
-        prev = (__mram_ptr node_t *)TM_LOAD(tx, &(set->head));
-        next = (__mram_ptr node_t *)TM_LOAD(tx, &(prev->next));
+        prev = (__mram_ptr node_t *)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(set->head));
+        next = (__mram_ptr node_t *)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(prev->next));
 
         while (1)
         {
-            v = TM_LOAD_LOOP(tx, &(next->val));
+            v = TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)&(next->val));
             if (v >= val)
             {
                 break;
             }
 
             prev = next;
-            next = (__mram_ptr node_t *)TM_LOAD_LOOP(tx, &(prev->next));
+            next = (__mram_ptr node_t *)TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)&(prev->next));
         }
 
         if (tx->status == 4)
@@ -132,7 +133,7 @@ set_add(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val, int transactional)
         result = (v != val);
         if (result)
         {
-            TM_STORE(tx, &(prev->next), new_node(val, next, 1));
+            TM_STORE(tx, (__mram_ptr uintptr_t *)&(prev->next), (uintptr_t)new_node(val, next, 1));
         }
 
         TM_COMMIT(tx);
@@ -142,7 +143,7 @@ set_add(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val, int transactional)
 }
 
 int
-set_remove(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val)
+set_remove(TYPE Tx *tx, __mram_ptr intset_t *set, val_t val)
 {
     int result = 0;
     __mram_ptr node_t *prev, *next;
@@ -150,19 +151,19 @@ set_remove(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val)
     val_t v;
 
     TM_START(tx);
-    prev = (__mram_ptr node_t *)TM_LOAD(tx, &(set->head));
-    next = (__mram_ptr node_t *)TM_LOAD(tx, &(prev->next));
+    prev = (__mram_ptr node_t *)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(set->head));
+    next = (__mram_ptr node_t *)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(prev->next));
 
     while (1)
     {
-        v = TM_LOAD_LOOP(tx, &(next->val));
+        v = TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)&(next->val));
         if (v >= val)
         {
             break;
         }
 
         prev = next;
-        next = (__mram_ptr node_t *)LOAD_RO(tx, &(prev->next));
+        next = (__mram_ptr node_t *)TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)&(prev->next));
     }
 
     if (tx->status == 4)
@@ -173,9 +174,9 @@ set_remove(TYPE Thread *tx, __mram_ptr intset_t *set, val_t val)
     result = (v == val);
     if (result)
     {
-        n = (__mram_ptr node_t *)TM_LOAD(tx, &(next->next));
+        n = (__mram_ptr node_t *)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(next->next));
 
-        TM_STORE(tx, &(prev->next), n);
+        TM_STORE(tx, (__mram_ptr uintptr_t *)&(prev->next), (uintptr_t)n);
     }
 
     TM_COMMIT(tx);

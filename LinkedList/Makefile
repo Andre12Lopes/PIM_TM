@@ -17,6 +17,7 @@ LIBS     	= -l$(LIB)
 BUILD_DIR	= bin
 HOST_DIR	= host
 DPU_DIR		= dpu
+LIB_DIR		= ../Lib
 
 HOST_TARGET = ${BUILD_DIR}/host
 DPU_TARGET 	= ${BUILD_DIR}/dpu
@@ -24,6 +25,7 @@ DPU_TARGET 	= ${BUILD_DIR}/dpu
 HOST_SRCS 	= $(wildcard $(HOST_DIR)/*.cpp)
 HOST_OBJS	= ${HOST_SRCS:.cpp=.o}
 DPU_SRCS	= $(wildcard $(DPU_DIR)/*.c)
+DPU_SRCS	+= $(LIB_DIR)/dpu_alloc.c
 DPU_OBJS	= ${DPU_SRCS:.c=.o}
 
 RM			= rm -f
@@ -50,14 +52,6 @@ endif
 
 ifdef UPDATE_PERCENTAGE
 	DEFINES += -DUPDATE_PERCENTAGE=$(UPDATE_PERCENTAGE)
-endif
-
-ifdef SET_INITIAL_SIZE
-	DEFINES += -DSET_INITIAL_SIZE=$(SET_INITIAL_SIZE)
-endif
-
-ifdef RAND_RANGE
-	DEFINES += -DRAND_RANGE=$(RAND_RANGE)
 endif
 
 # =============================================================================

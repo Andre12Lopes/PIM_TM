@@ -9,9 +9,7 @@
 #include "atomic.h"
 #include "utils.h"
 
-#ifndef LOCK_ARRAY_LOG_SIZE
 #define LOCK_ARRAY_LOG_SIZE 10
-#endif
 
 #define OWNED_BITS 1       /* 1 bit */
 #define INCARNATION_BITS 3 /* 3 bits */
@@ -36,7 +34,7 @@
 #define LOCK_ARRAY_SIZE (1 << LOCK_ARRAY_LOG_SIZE)
 #define LOCK_MASK (LOCK_ARRAY_SIZE - 1)
 
-#define LOCK_SHIFT_EXTRA 1
+#define LOCK_SHIFT_EXTRA 0
 #define LOCK_SHIFT ((sizeof(stm_word_t) == 4 ? 2 : 3) + LOCK_SHIFT_EXTRA)
 #define LOCK_IDX(a) (((stm_word_t)(a) >> LOCK_SHIFT) & LOCK_MASK)
 #define GET_LOCK(a) (_tinystm.locks + LOCK_IDX(a))

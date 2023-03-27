@@ -47,6 +47,9 @@ case $2 in
 	"bank" )
 		benchmark_folder="Bank"
 		;;
+	"linkedlist" )
+		benchmark_folder="LinkedList"
+		;;
 	"kmeans" )
 		benchmark_folder="Kmeans"
 		;;
@@ -69,7 +72,7 @@ bash clean.sh
 
 common_flags="TX_IN_MRAM= DATA_IN_MRAM=1 BACKOFF=1"
 
-tm_flags="$tiny_mode R_SET_SIZE=10 W_SET_SIZE=10 LOCK_ARRAY_LOG_SIZE=10"
+tm_flags="$tiny_mode"
 
 benchmark_lib_flags="FOLDER=$backend_folder LIB=$backend_lib NR_TASKLETS=$4"
 
@@ -82,6 +85,14 @@ if [[ $benchmark_folder == "Bank" ]]; then
 
 	cd $benchmark_folder
 	make $common_flags $benchmark_lib_flags $bank_flags
+	cd ..
+fi
+
+if [[ $benchmark_folder == "LinkedList" ]]; then
+	linkedlist_flags="UPDATE_PERCENTAGE=$3"
+
+	cd $benchmark_folder
+	make $common_flags $benchmark_lib_flags $linkedlist_flags
 	cd ..
 fi
 

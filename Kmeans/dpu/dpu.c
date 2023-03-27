@@ -34,9 +34,9 @@ float delta_per_thread[NR_TASKLETS];
 int membership[NUM_OBJECTS];
 
 float new_centers[N_CLUSTERS][NUM_ATTRIBUTES];
-int new_centers_len[N_CLUSTERS];
+uint32_t new_centers_len[N_CLUSTERS];
 
-__dma_aligned float cluster_centres[N_CLUSTERS][NUM_ATTRIBUTES];
+__dma_aligned float cluster_centres[N_CLUSTERS * NUM_ATTRIBUTES];
 
 #ifdef TX_IN_MRAM
 Tx __mram_noinit tx_mram[NR_TASKLETS];
@@ -86,7 +86,7 @@ main()
         for (int i = 0; i < N_CLUSTERS; ++i)
         {
             int n = (int)(RAND_R_FNC(s) % NUM_OBJECTS);
-            mram_read(attributes[n], cluster_centres[i], sizeof(cluster_centres[i]));
+            mram_read(attributes[n], &cluster_centres[i * NUM_ATTRIBUTES], sizeof(attributes[n]));
         }
 
         loop = 0;
@@ -133,9 +133,9 @@ main()
 
             for (int j = 0; j < NUM_ATTRIBUTES; ++j)
             {
-                intptr_t tmp = TM_LOAD_LOOP(tx, &new_centers[index][j]);
+                uintptr_t tmp = TM_LOAD_LOOP(tx, (uintptr_t *)&new_centers[index][j]);
                 tmp_center_attr = intp2double(tmp) + tmp_point[j];
-                TM_STORE_LOOP(tx, &new_centers[index][j], double2intp(tmp_center_attr));
+                TM_STORE_LOOP(tx, (uintptr_t *)&new_centers[index][j], double2intp(tmp_center_attr));
             }
 
             if (tx->status == 4)
@@ -159,7 +159,7 @@ main()
                 {
                     if (new_centers_len[i] > 0)
                     {
-                        cluster_centres[i][j] = new_centers[i][j] / new_centers_len[i];
+                        cluster_centres[(i * NUM_ATTRIBUTES) + j] = new_centers[i][j] / new_centers_len[i];
                     }
                     new_centers[i][j] = 0.0;
                 }
