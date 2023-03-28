@@ -23,7 +23,9 @@
 
 __mram_ptr intset_t *set;
 
+#ifdef TX_IN_MRAM
 Tx __mram_noinit tx_mram[NR_TASKLETS];
+#endif
 
 void
 test(TYPE Tx *tx, __mram_ptr intset_t *set, uint64_t *seed, int *last);
