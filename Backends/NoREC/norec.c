@@ -20,7 +20,7 @@ enum
     TX_ABORTED = 4
 };
 
-volatile long *LOCK;
+volatile long LOCK;
 
 void
 TxAbort(TYPE Thread *Self)
@@ -108,7 +108,7 @@ TxStart(TYPE Thread *Self)
 
     do
     {
-        Self->snapshot = *LOCK;
+        Self->snapshot = LOCK;
     } while ((Self->snapshot & 1) != 0);
 }
 
@@ -124,7 +124,7 @@ ReadSetCoherent(TYPE Thread *Self)
     while (1)
     {
         MEMBARSTLD();
-        time = *LOCK;
+        time = LOCK;
         if ((time & 1) != 0)
         {
             continue;
@@ -139,7 +139,7 @@ ReadSetCoherent(TYPE Thread *Self)
             }
         }
 
-        if (*LOCK == time)
+        if (LOCK == time)
         {
             break;
         }
@@ -172,7 +172,7 @@ TxLoad(TYPE Thread *Self, volatile TYPE_ACC uintptr_t *Addr)
 
     MEMBARLDLD();
     Valu = LDNF(Addr);
-    while (*LOCK != Self->snapshot)
+    while (LOCK != Self->snapshot)
     {
         Self->start_validation = perfcounter_config(COUNT_CYCLES, false);
 
@@ -261,11 +261,11 @@ TryFastUpdate(TYPE Thread *Self)
     s_time = perfcounter_config(COUNT_CYCLES, false);
 
 acquire:
-    acquire(LOCK);
+    acquire(&LOCK);
 
-    if (*LOCK != Self->snapshot)
+    if (LOCK != Self->snapshot)
     {
-        release(LOCK);
+        release(&LOCK);
 
         long newSnap = ReadSetCoherent(Self);
         if (newSnap == -1)
@@ -280,16 +280,16 @@ acquire:
         goto acquire;
     }
 
-    *LOCK = Self->snapshot + 1;
+    LOCK = Self->snapshot + 1;
 
-    release(LOCK);
+    release(&LOCK);
 
     {
         WriteBackForward(Self); /* write-back the deferred stores */
     }
 
     MEMBARSTST(); /* Ensure the above stores are visible  */
-    *LOCK = Self->snapshot + 2;
+    LOCK = Self->snapshot + 2;
     MEMBARSTLD();
 
     return 1; /* success */
