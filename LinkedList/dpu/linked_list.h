@@ -8,7 +8,9 @@ typedef unsigned int val_t;
 typedef struct node
 {
     val_t val;
+    val_t padding;
     __mram_ptr struct node *next;
+    val_t padding_2;
 } node_t;
 
 typedef struct intset

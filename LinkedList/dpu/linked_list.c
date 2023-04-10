@@ -27,8 +27,10 @@ new_node(val_t val, __mram_ptr node_t *next, int transactional)
     }
 
     node->val = val;
+    node->padding = 0;
     node->next = next;
-
+    node->padding_2 = 0;
+    
     return node;
 }
 
