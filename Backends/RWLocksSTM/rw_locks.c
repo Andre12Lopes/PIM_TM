@@ -10,6 +10,7 @@ volatile stm_word_t lock_table[LOCK_ARRAY_SIZE];
 void
 stm_init(TYPE stm_tx *tx, int tid)
 {
+    tx->tid = tid;
     tx->rng = tid + 1;
     tx->process_cycles = 0;
     tx->read_cycles = 0;

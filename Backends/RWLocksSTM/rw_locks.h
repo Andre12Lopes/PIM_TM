@@ -17,10 +17,10 @@
 #endif
 
 /* Initial size of read sets */
-#define R_SET_SIZE 45
+#define R_SET_SIZE 15
 
 /* Initial size of write sets */
-#define W_SET_SIZE 2
+#define W_SET_SIZE 15
 
 typedef uintptr_t stm_word_t;
 
@@ -55,6 +55,7 @@ typedef struct _stm_tx
     volatile stm_word_t status; /* Transaction status */
     r_set_t r_set;              /* Read set */
     w_set_t w_set;              /* Write set */
+    uint8_t tid;
     uint64_t rng;
     uint32_t retries;
     uint64_t aborts;

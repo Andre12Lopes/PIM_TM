@@ -41,7 +41,7 @@ stm_wtetl_rollback(TYPE stm_tx *tx)
         }
         else
         {
-            *(r->lock) = LOCK_DEC_N_READERS(*(r->lock));
+            *(r->lock) = LOCK_DEC_N_READERS((*(r->lock)), tx->tid);
         }
 
         hardware_release_lock(r->lock);
@@ -106,17 +106,19 @@ stm_wtetl_read(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
 
     if (LOCK_GET_OWNED_READ(lock_value))
     {
-        if (stm_has_read_lock(tx, lock) != NULL)
+        // TODO...
+        // if (stm_has_read_lock(tx, lock) != NULL)
+        if (LOCK_GET_ME_OWNED_READ(lock_value, tx->tid))
         {
             hardware_release_lock(lock);
             return *addr;
         }
 
-        *lock = LOCK_INC_N_READERS(lock_value);
+        *lock = LOCK_INC_N_READERS(lock_value, tx->tid);
     }
     else
     {
-        *lock = LOCK_SET_READ;
+        *lock = LOCK_SET_READ(tx->tid);
     }
 
     hardware_release_lock(lock);
@@ -267,7 +269,7 @@ stm_wtetl_commit(TYPE stm_tx *tx)
         }
         else
         {
-            *(r->lock) = LOCK_DEC_N_READERS(*(r->lock));
+            *(r->lock) = LOCK_DEC_N_READERS((*(r->lock)), tx->tid);
         }
 
         hardware_release_lock(r->lock);
