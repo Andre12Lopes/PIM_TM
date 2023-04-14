@@ -70,7 +70,7 @@ fi
 
 bash clean.sh
 
-common_flags="TX_IN_MRAM= DATA_IN_MRAM=1 BACKOFF=1"
+common_flags="TX_IN_MRAM=1 DATA_IN_MRAM=1 BACKOFF=1"
 
 tm_flags="$tiny_mode"
 
