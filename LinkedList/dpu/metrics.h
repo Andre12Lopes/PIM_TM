@@ -21,10 +21,10 @@ start_count(int tid)
 {
     if (tid == 0)
     {
-    	n_trans = N_TRANSACTIONS * NR_TASKLETS;
-	    n_aborts = 0;
+        n_trans = N_TRANSACTIONS * NR_TASKLETS;
+        n_aborts = 0;
 
-	    initial_time = perfcounter_config(COUNT_CYCLES, false);
+        initial_time = perfcounter_config(COUNT_CYCLES, false);
     }
 
     barrier_wait(&barr);
@@ -35,7 +35,7 @@ get_metrics(TYPE Tx *tx, int tid)
 {
     barrier_wait(&barr);
 
-	if (tid == 0)
+    if (tid == 0)
     {
         nb_cycles = perfcounter_get() - initial_time;
 

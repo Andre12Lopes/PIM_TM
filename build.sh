@@ -2,7 +2,7 @@
 
 if [[ $# != 4 ]]; then
 	echo "Invalid number of parameters"
-	echo "Usage: ./build.sh [backend {norec|rwlocks|tiny_wbctl|tiny_wbetl|tiny_wtetl}] [benchmark {bank|linkedlist|kmeans}] [contention {e.g. #bank accounts}] [#tasklets {1 .. 24}]"
+	echo "Usage: ./build.sh [backend {norec|rwlocks|tiny_wbctl|tiny_wbetl|tiny_wtetl}] [benchmark {bank|linkedlist|kmeans|labyrinth}] [contention {e.g. #bank accounts}] [#tasklets {1 .. 24}]"
 	exit 1
 fi
 
@@ -53,6 +53,9 @@ case $2 in
 	"kmeans" )
 		benchmark_folder="Kmeans"
 		;;
+	"labyrinth" )
+		benchmark_folder="Labyrinth"
+		;;
 	* )
 		echo ""
 		echo "==================== ERROR UNKNOWN BENCHMARK $2 ===================="
@@ -70,7 +73,7 @@ fi
 
 bash clean.sh
 
-common_flags="TX_IN_MRAM=1 DATA_IN_MRAM=1 BACKOFF=1"
+common_flags="TX_IN_MRAM= DATA_IN_MRAM=1 BACKOFF=1"
 
 tm_flags="$tiny_mode"
 
@@ -101,5 +104,13 @@ if [[ $benchmark_folder == "Kmeans" ]]; then
 
 	cd $benchmark_folder
 	make $common_flags $benchmark_lib_flags $kmeans_flags
+	cd ..
+fi
+
+if [[ $benchmark_folder == "Labyrinth" ]]; then
+	# kmeans_flags="N_CLUSTERS=$3"
+
+	cd $benchmark_folder
+	make $common_flags $benchmark_lib_flags # $kmeans_flags
 	cd ..
 fi

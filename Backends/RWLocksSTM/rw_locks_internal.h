@@ -44,14 +44,19 @@ enum
 #define READ_MASK 0x01
 #define WRITE_MASK 0x02
 
-#define LOCK_GET_OWNED_READ(l) ((l) & READ_MASK)
+#define LOCK_GET_OWNED_READ(l) ((l)&READ_MASK)
 
 #define LOCK_GET_ME_OWNED_READ(l, id) ((l) & (0x01 << (LOCK_BITS + id)))
 
-#define LOCK_SET_READ(id) ((0x01 << LOCK_FLAG_BITS) | (0x01 << (LOCK_BITS + id)) | READ_MASK)
+#define LOCK_SET_READ(id)                                                                \
+    ((0x01 << LOCK_FLAG_BITS) | (0x01 << (LOCK_BITS + id)) | READ_MASK)
 #define LOCK_GET_N_READERS(l) ((l) >> LOCK_FLAG_BITS)
-#define LOCK_INC_N_READERS(l, id) (((LOCK_GET_N_READERS(l) + 1) << LOCK_FLAG_BITS) | ((l & 0x3FFFFFC) | (0x01 << (LOCK_BITS + id))) | READ_MASK)
-#define LOCK_DEC_N_READERS(l, id) (((LOCK_GET_N_READERS(l) - 1) << LOCK_FLAG_BITS) | ((l & 0x3FFFFFC) & ~(0x01 << (LOCK_BITS + id))) | READ_MASK)
+#define LOCK_INC_N_READERS(l, id)                                                        \
+    (((LOCK_GET_N_READERS(l) + 1) << LOCK_FLAG_BITS) |                                   \
+     ((l & 0x3FFFFFC) | (0x01 << (LOCK_BITS + id))) | READ_MASK)
+#define LOCK_DEC_N_READERS(l, id)                                                        \
+    (((LOCK_GET_N_READERS(l) - 1) << LOCK_FLAG_BITS) |                                   \
+     ((l & 0x3FFFFFC) & ~(0x01 << (LOCK_BITS + id))) | READ_MASK)
 
 #define LOCK_GET_OWNED_WRITE(l) ((l)&WRITE_MASK)
 #define LOCK_SET_ADDR_WRITE(a) ((a) | WRITE_MASK)

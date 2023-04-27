@@ -46,7 +46,7 @@ new_node(val_t val, __mram_ptr node_t *next, int transactional)
     node->padding = 0;
     node->next = next;
     node->padding_2 = 0;
-    
+
     return node;
 }
 
@@ -89,7 +89,8 @@ set_contains(TYPE Tx *tx, __mram_ptr intset_t *set, val_t val)
         }
 
         prev = next;
-        next = (__mram_ptr node_t *)TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)&(prev->next));
+        next =
+            (__mram_ptr node_t *)TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)&(prev->next));
     }
 
     if (tx->status == 4)
@@ -140,7 +141,8 @@ set_add(TYPE Tx *tx, __mram_ptr intset_t *set, val_t val, int transactional)
             }
 
             prev = next;
-            next = (__mram_ptr node_t *)TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)&(prev->next));
+            next = (__mram_ptr node_t *)TM_LOAD_LOOP(
+                tx, (__mram_ptr uintptr_t *)&(prev->next));
         }
 
         if (tx->status == 4)
@@ -151,7 +153,8 @@ set_add(TYPE Tx *tx, __mram_ptr intset_t *set, val_t val, int transactional)
         result = (v != val);
         if (result)
         {
-            TM_STORE(tx, (__mram_ptr uintptr_t *)&(prev->next), (uintptr_t)new_node(val, next, 1));
+            TM_STORE(tx, (__mram_ptr uintptr_t *)&(prev->next),
+                     (uintptr_t)new_node(val, next, 1));
         }
 
         TM_COMMIT(tx);
@@ -181,7 +184,8 @@ set_remove(TYPE Tx *tx, __mram_ptr intset_t *set, val_t val)
         }
 
         prev = next;
-        next = (__mram_ptr node_t *)TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)&(prev->next));
+        next =
+            (__mram_ptr node_t *)TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)&(prev->next));
     }
 
     if (tx->status == 4)

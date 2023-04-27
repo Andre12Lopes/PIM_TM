@@ -34,12 +34,12 @@ mram_malloc(size_t size)
     block = memory_ptr[tid];
 
     memory_ptr[tid] += size;
-
+    
     return block;
 }
 
 void
 mram_free(__mram_ptr void *ptr)
 {
-    (void) ptr;
+    (void)ptr;
 }
