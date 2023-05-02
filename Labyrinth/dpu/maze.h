@@ -61,11 +61,11 @@ grid_alloc(__mram_ptr grid_t *grid)
 }
 
 void
-grid_copy(__mram_ptr grid_t *dstGridPtr,__mram_ptr grid_t *srcGridPtr)
+grid_copy(__mram_ptr grid_t *dstGridPtr, __mram_ptr grid_t *srcGridPtr)
 {
     assert(srcGridPtr->height == dstGridPtr->height);
-    assert(srcGridPtr->width  == dstGridPtr->width);
-    assert(srcGridPtr->depth  == dstGridPtr->depth);
+    assert(srcGridPtr->width == dstGridPtr->width);
+    assert(srcGridPtr->depth == dstGridPtr->depth);
 
     memcpy(dstGridPtr->points, srcGridPtr->points, sizeof(dstGridPtr->points));
 }
@@ -73,18 +73,18 @@ grid_copy(__mram_ptr grid_t *dstGridPtr,__mram_ptr grid_t *srcGridPtr)
 __mram_ptr long *
 grid_get_point_ref(__mram_ptr grid_t *gridPtr, long x, long y, long z)
 {
-    return &(gridPtr->points[(z * gridPtr->height * gridPtr->width) + 
+    return &(gridPtr->points[(z * gridPtr->height * gridPtr->width) +
                              ((x * gridPtr->width) + y)]);
 }
 
 void
-grid_set_point(__mram_ptr grid_t* gridPtr, long x, long y, long z, long value)
+grid_set_point(__mram_ptr grid_t *gridPtr, long x, long y, long z, long value)
 {
     mram_write(&value, grid_get_point_ref(gridPtr, x, y, z), sizeof(long));
 }
 
 void
-grid_get_point_indices(__mram_ptr grid_t *gridPtr, __mram_ptr long *gridPointPtr, 
+grid_get_point_indices(__mram_ptr grid_t *gridPtr, __mram_ptr long *gridPointPtr,
                        long *xPtr, long *yPtr, long *zPtr)
 {
     long area = gridPtr->height * gridPtr->width;
@@ -103,23 +103,22 @@ grid_get_point(__mram_ptr grid_t *gridPtr, long x, long y, long z)
 bool_t
 grid_is_point_empty(__mram_ptr grid_t *gridPtr, long x, long y, long z)
 {
-    long value = grid_get_point(gridPtr, x, y, z);
+    long value = *(grid_get_point_ref(gridPtr, x, y, z));
     return ((value == GRID_POINT_EMPTY) ? TRUE : FALSE);
 }
 
 bool_t
-grid_is_point_full(__mram_ptr  grid_t *gridPtr, long x, long y, long z)
+grid_is_point_full(__mram_ptr grid_t *gridPtr, long x, long y, long z)
 {
-    long value = grid_get_point(gridPtr, x, y, z);
+    long value = *(grid_get_point_ref(gridPtr, x, y, z));
     return ((value == GRID_POINT_FULL) ? TRUE : FALSE);
 }
 
 bool_t
 grid_is_point_valid(__mram_ptr grid_t *gridPtr, long x, long y, long z)
 {
-    if (x < 0 || x >= gridPtr->height  ||
-        y < 0 || y >= gridPtr->width ||
-        z < 0 || z >= gridPtr->depth)
+    if (x < 0 || x >= gridPtr->height || y < 0 || y >= gridPtr->width || z < 0 ||
+        z >= gridPtr->depth)
     {
         return FALSE;
     }

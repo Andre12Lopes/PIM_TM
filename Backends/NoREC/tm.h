@@ -40,6 +40,14 @@ typedef Thread Tx;
         break;                                                                           \
     }
 
+#define TM_RESTART(tx)                                                                   \
+    TxAbort(tx);                                                                         \
+    continue;
+
+#define TM_RESTART_LOOP(tx)                                                              \
+    TxAbort(tx);                                                                         \
+    break;
+
 #define TM_COMMIT(tx)                                                                    \
     TxCommit(tx);                                                                        \
     if ((tx)->status != 4)                                                               \

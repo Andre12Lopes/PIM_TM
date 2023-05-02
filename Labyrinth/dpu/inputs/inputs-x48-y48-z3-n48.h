@@ -1,10 +1,10 @@
 #ifndef _INPUTS_H_
 #define _INPUTS_H_
 
-#define NUM_PATHS 	48
-#define RANGE_X 	6
-#define RANGE_Y 	6
-#define RANGE_Z 	3
+#define NUM_PATHS 1
+#define RANGE_X 6
+#define RANGE_Y 6
+#define RANGE_Z 3
 
 // __mram int PATHS[NUM_PATHS][6] =
 // {
@@ -58,11 +58,9 @@
 // 	{2, 8, 1, 3, 19, 0}
 // };
 
-__mram int PATHS[1][6] =
-{
-	{0, 0, 1, 5, 5, 1},
+__mram int PATHS[1][6] = {
+    {0, 0, 1, 5, 5, 1},
 };
-
 
 // cat file.txt | tr -s ' ' ", #" | cut -d ', ' -f 2-7 | awk '{print "{"$0"},"}'
 

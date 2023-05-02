@@ -1,7 +1,7 @@
 #ifndef _ROUTER_H_
 #define _ROUTER_H_
 
-typedef enum momentum 
+typedef enum momentum
 {
     MOMENTUM_ZERO = 0,
     MOMENTUM_POSX = 1,
@@ -12,7 +12,7 @@ typedef enum momentum
     MOMENTUM_NEGZ = 6
 } momentum_t;
 
-typedef struct point 
+typedef struct point
 {
     long x;
     long y;
@@ -21,12 +21,12 @@ typedef struct point
     momentum_t momentum;
 } point_t;
 
-point_t MOVE_POSX = { 1,  0,  0,  0, MOMENTUM_POSX};
-point_t MOVE_POSY = { 0,  1,  0,  0, MOMENTUM_POSY};
-point_t MOVE_POSZ = { 0,  0,  1,  0, MOMENTUM_POSZ};
-point_t MOVE_NEGX = {-1,  0,  0,  0, MOMENTUM_NEGX};
-point_t MOVE_NEGY = { 0, -1,  0,  0, MOMENTUM_NEGY};
-point_t MOVE_NEGZ = { 0,  0, -1,  0, MOMENTUM_NEGZ};
+point_t MOVE_POSX = {1, 0, 0, 0, MOMENTUM_POSX};
+point_t MOVE_POSY = {0, 1, 0, 0, MOMENTUM_POSY};
+point_t MOVE_POSZ = {0, 0, 1, 0, MOMENTUM_POSZ};
+point_t MOVE_NEGX = {-1, 0, 0, 0, MOMENTUM_NEGX};
+point_t MOVE_NEGY = {0, -1, 0, 0, MOMENTUM_NEGY};
+point_t MOVE_NEGZ = {0, 0, -1, 0, MOMENTUM_NEGZ};
 
 typedef struct router
 {
@@ -47,26 +47,26 @@ router_alloc(__mram_ptr router_t *r, long x_cost, long y_cost, long z_cost,
 }
 
 static void
-pexpand_to_neighbor(__mram_ptr grid_t* myGridPtr, long x, long y, long z,
-                    long value, __mram_ptr queue_t* queuePtr)
+pexpand_neighbor(__mram_ptr grid_t *myGridPtr, long x, long y, long z, long value,
+                    __mram_ptr queue_t *queuePtr)
 {
     __mram_ptr long *neighborGridPointPtr;
     long neighborValue;
-    
-    if(grid_is_point_valid(myGridPtr, x, y, z))
+
+    if (grid_is_point_valid(myGridPtr, x, y, z))
     {
         neighborGridPointPtr = grid_get_point_ref(myGridPtr, x, y, z);
         neighborValue = *neighborGridPointPtr;
 
-        if (neighborValue == GRID_POINT_EMPTY) 
+        if (neighborValue == GRID_POINT_EMPTY)
         {
             (*neighborGridPointPtr) = value;
             queue_push(queuePtr, (__mram_ptr void *)neighborGridPointPtr);
-        } 
-        else if (neighborValue != GRID_POINT_FULL) 
+        }
+        else if (neighborValue != GRID_POINT_FULL)
         {
             /* We have expanded here before... is this new path better? */
-            if (value < neighborValue) 
+            if (value < neighborValue)
             {
                 (*neighborGridPointPtr) = value;
                 queue_push(queuePtr, (__mram_ptr void *)neighborGridPointPtr);
@@ -76,8 +76,8 @@ pexpand_to_neighbor(__mram_ptr grid_t* myGridPtr, long x, long y, long z,
 }
 
 static bool_t
-pdo_expansion(__mram_ptr router_t *routerPtr, __mram_ptr grid_t *myGridPtr, 
-              __mram_ptr queue_t* queuePtr, coordinate_t* srcPtr, coordinate_t* dstPtr)
+pdo_expansion(__mram_ptr router_t *routerPtr, __mram_ptr grid_t *myGridPtr,
+              __mram_ptr queue_t *queuePtr, coordinate_t *srcPtr, coordinate_t *dstPtr)
 {
     __mram_ptr long *srcGridPointPtr;
     __mram_ptr long *dstGridPointPtr;
@@ -87,13 +87,13 @@ pdo_expansion(__mram_ptr router_t *routerPtr, __mram_ptr grid_t *myGridPtr,
     long value;
 
     queue_clear(queuePtr);
-    
+
     srcGridPointPtr = grid_get_point_ref(myGridPtr, srcPtr->x, srcPtr->y, srcPtr->z);
     queue_push(queuePtr, (__mram_ptr void *)srcGridPointPtr);
 
     grid_set_point(myGridPtr, srcPtr->x, srcPtr->y, srcPtr->z, 0);
     grid_set_point(myGridPtr, dstPtr->x, dstPtr->y, dstPtr->z, GRID_POINT_EMPTY);
-    
+
     dstGridPointPtr = grid_get_point_ref(myGridPtr, dstPtr->x, dstPtr->y, dstPtr->z);
     isPathFound = FALSE;
 
@@ -116,20 +116,19 @@ pdo_expansion(__mram_ptr router_t *routerPtr, __mram_ptr grid_t *myGridPtr,
 
         // printf("Expanded point: (%ld, %ld, %ld)\n", x, y, z);
 
-        pexpand_to_neighbor(myGridPtr, x+1, y, z, (value + routerPtr->x_cost), queuePtr);
-        pexpand_to_neighbor(myGridPtr, x-1, y, z, (value + routerPtr->x_cost), queuePtr);
-        pexpand_to_neighbor(myGridPtr, x, y+1, z, (value + routerPtr->y_cost), queuePtr);
-        pexpand_to_neighbor(myGridPtr, x, y-1, z, (value + routerPtr->y_cost), queuePtr);
-        pexpand_to_neighbor(myGridPtr, x, y, z+1, (value + routerPtr->z_cost), queuePtr);
-        pexpand_to_neighbor(myGridPtr, x, y, z-1, (value + routerPtr->z_cost), queuePtr);
+        pexpand_neighbor(myGridPtr, x + 1, y, z, (value + routerPtr->x_cost), queuePtr);
+        pexpand_neighbor(myGridPtr, x - 1, y, z, (value + routerPtr->x_cost), queuePtr);
+        pexpand_neighbor(myGridPtr, x, y + 1, z, (value + routerPtr->y_cost), queuePtr);
+        pexpand_neighbor(myGridPtr, x, y - 1, z, (value + routerPtr->y_cost), queuePtr);
+        pexpand_neighbor(myGridPtr, x, y, z + 1, (value + routerPtr->z_cost), queuePtr);
+        pexpand_neighbor(myGridPtr, x, y, z - 1, (value + routerPtr->z_cost), queuePtr);
 
         // grid_print(myGridPtr);
         // printf("============================\n");
     }
 
-    printf("Expansion (%li, %li, %li) -> (%li, %li, %li):\n",
-           srcPtr->x, srcPtr->y, srcPtr->z,
-           dstPtr->x, dstPtr->y, dstPtr->z);
+    printf("Expansion (%li, %li, %li) -> (%li, %li, %li):\n", srcPtr->x, srcPtr->y,
+           srcPtr->z, dstPtr->x, dstPtr->y, dstPtr->z);
     printf("Path found: %d\n", isPathFound);
     grid_print(myGridPtr);
 
@@ -137,9 +136,11 @@ pdo_expansion(__mram_ptr router_t *routerPtr, __mram_ptr grid_t *myGridPtr,
 }
 
 static void
-traceToNeighbor(__mram_ptr grid_t* myGridPtr, point_t* currPtr, point_t* movePtr,
-                bool_t useMomentum, long bendCost, point_t* nextPtr)
+traceToNeighbor(__mram_ptr grid_t *myGridPtr, point_t *currPtr, point_t *movePtr,
+                bool_t useMomentum, long bendCost, point_t *nextPtr)
 {
+    long value;
+    long b;
     long x = currPtr->x + movePtr->x;
     long y = currPtr->y + movePtr->y;
     long z = currPtr->z + movePtr->z;
@@ -148,14 +149,14 @@ traceToNeighbor(__mram_ptr grid_t* myGridPtr, point_t* currPtr, point_t* movePtr
         !grid_is_point_empty(myGridPtr, x, y, z) &&
         !grid_is_point_full(myGridPtr, x, y, z))
     {
-        long value = grid_get_point(myGridPtr, x, y, z);
-        long b = 0;
+        value = *(grid_get_point_ref(myGridPtr, x, y, z));
+        b = 0;
 
-        if (useMomentum && (currPtr->momentum != movePtr->momentum)) 
+        if (useMomentum && (currPtr->momentum != movePtr->momentum))
         {
             b = bendCost;
         }
-    
+
         if ((value + b) <= nextPtr->value) /* '=' favors neighbors over current */
         {
             nextPtr->x = x;
@@ -168,7 +169,7 @@ traceToNeighbor(__mram_ptr grid_t* myGridPtr, point_t* currPtr, point_t* movePtr
 }
 
 static __mram_ptr vector_t *
-pdo_traceback(__mram_ptr grid_t* gridPtr, __mram_ptr grid_t *myGridPtr, 
+pdo_traceback(__mram_ptr grid_t *gridPtr, __mram_ptr grid_t *myGridPtr,
               coordinate_t *dstPtr, long bendCost)
 {
     __mram_ptr vector_t *pointVectorPtr;
@@ -186,18 +187,19 @@ pdo_traceback(__mram_ptr grid_t* gridPtr, __mram_ptr grid_t *myGridPtr,
 
     while (1)
     {
-        __mram_ptr long *gridPointPtr = 
+        __mram_ptr long *gridPointPtr =
             grid_get_point_ref(gridPtr, next.x, next.y, next.z);
         vector_push_back(pointVectorPtr, (__mram_ptr void *)gridPointPtr);
         grid_set_point(myGridPtr, next.x, next.y, next.z, GRID_POINT_FULL);
 
         /* Check if we are done */
-        if (next.value == 0) 
+        if (next.value == 0)
         {
             break;
         }
         curr = next;
 
+        // printf("(%li, %li, %li)\n", next.x, next.y, next.z);
         /*
          * Check 6 neighbors
          *
@@ -210,7 +212,8 @@ pdo_traceback(__mram_ptr grid_t* gridPtr, __mram_ptr grid_t *myGridPtr,
         traceToNeighbor(myGridPtr, &curr, &MOVE_NEGY, TRUE, bendCost, &next);
         traceToNeighbor(myGridPtr, &curr, &MOVE_NEGZ, TRUE, bendCost, &next);
 
-        printf("(%li, %li, %li)\n", next.x, next.y, next.z);
+        // printf("(%li, %li, %li)\n", next.x, next.y, next.z);
+    
         /*
          * Because of bend costs, none of the neighbors may appear to be closer.
          * In this case, pick a neighbor while ignoring momentum.
@@ -225,6 +228,9 @@ pdo_traceback(__mram_ptr grid_t* gridPtr, __mram_ptr grid_t *myGridPtr,
             traceToNeighbor(myGridPtr, &curr, &MOVE_NEGY, FALSE, bendCost, &next);
             traceToNeighbor(myGridPtr, &curr, &MOVE_NEGZ, FALSE, bendCost, &next);
 
+            // printf("(%li, %li, %li)\n", next.x, next.y, next.z);
+            // printf("###########################\n");
+
             if ((curr.x == next.x) && (curr.y == next.y) && (curr.z == next.z))
             {
                 vector_free(pointVectorPtr);
@@ -233,6 +239,10 @@ pdo_traceback(__mram_ptr grid_t* gridPtr, __mram_ptr grid_t *myGridPtr,
                 return NULL; /* cannot find path */
             }
         }
+
+        printf("(%li, %li, %li)\n", next.x, next.y, next.z);
+        printf("###########################\n");
+
     }
 
 #if DEBUG

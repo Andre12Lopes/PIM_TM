@@ -28,16 +28,15 @@ start_count(int tid)
 }
 
 void
-get_metrics(TYPE Tx *tx, int tid, int loops)
+get_metrics(TYPE Tx *tx, int tid, int num_transactions)
 {
     // barrier_wait(&barr);
-    // int num_transactions = NUM_OBJECTS * loops;
 
     // if (tid == 0)
     // {
     //     nb_cycles = perfcounter_get() - initial_time;
 
-    //     n_trans = NUM_OBJECTS * loops;
+    //     n_trans = num_transactions;
 
     //     n_aborts = 0;
     //     nb_process_cycles = 0;
