@@ -2,7 +2,7 @@
 
 if [[ $# != 4 ]]; then
 	echo "Invalid number of parameters"
-	echo "Usage: ./build.sh [backend {norec|rwlocks|tiny_wbctl|tiny_wbetl|tiny_wtetl}] [benchmark {bank|linkedlist|kmeans|labyrinth}] [contention {e.g. #bank accounts}] [#tasklets {1 .. 24}]"
+	echo "Usage: ./build.sh [backend {norec|rwlocks_wbctl|rwlocks_wbetl|rwlocks_wtetl|tiny_wbctl|tiny_wbetl|tiny_wtetl}] [benchmark {bank|linkedlist|kmeans|labyrinth}] [contention {e.g. #bank accounts}] [#tasklets {1 .. 24}]"
 	exit 1
 fi
 
@@ -10,15 +10,27 @@ backend_folder=
 backend_lib=
 benchmark_folder=
 tiny_mode=
+rwlocks_mode=
 
 case $1 in
 	"norec" )
 		backend_folder="NoREC"
 		backend_lib="norec"
 		;;
-	"rwlocks" )
+	"rwlocks_wbctl" )
 		backend_folder="RWLocksSTM"
 		backend_lib="rwlocks"
+		rwlocks_mode="WRITE_BACK_CTL=1"
+		;;
+	"rwlocks_wbetl" )
+		backend_folder="RWLocksSTM"
+		backend_lib="rwlocks"
+		rwlocks_mode="WRITE_BACK_ETL=1"
+		;;
+	"rwlocks_wtetl" )
+		backend_folder="RWLocksSTM"
+		backend_lib="rwlocks"
+		rwlocks_mode="WRITE_THROUGH_ETL=1"
 		;;
 	"tiny_wbctl" )
 		backend_folder="TinySTM"
@@ -75,7 +87,7 @@ bash clean.sh
 
 common_flags="TX_IN_MRAM= DATA_IN_MRAM=1 BACKOFF=1"
 
-tm_flags="$tiny_mode"
+tm_flags="$tiny_mode $rwlocks_mode"
 
 benchmark_lib_flags="FOLDER=$backend_folder LIB=$backend_lib NR_TASKLETS=$4"
 

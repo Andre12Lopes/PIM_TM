@@ -1,11 +1,11 @@
-#ifndef _RW_LOCKS_WTETL_H_
-#define _RW_LOCKS_WTETL_H_
+#ifndef _RW_LOCKS_WBETL_H_
+#define _RW_LOCKS_WBETL_H_
 
 #include <assert.h>
 #include <stdio.h>
 
 static inline void
-stm_wtetl_rollback(TYPE stm_tx *tx)
+stm_wbetl_rollback(TYPE stm_tx *tx)
 {
     TYPE w_entry_t *w;
     TYPE r_entry_t *r;
@@ -13,7 +13,7 @@ stm_wtetl_rollback(TYPE stm_tx *tx)
     w = tx->w_set.entries;
     for (uint16_t i = tx->w_set.nb_entries; i > 0; i--, w++)
     {
-        *(w->addr) = w->value;
+        // *(w->addr) = w->value;
 
         if (w->next != NULL)
         {
@@ -64,12 +64,13 @@ stm_has_read_lock(TYPE stm_tx *tx, volatile stm_word_t *lock)
 }
 
 static inline stm_word_t
-stm_wtetl_read(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
+stm_wbetl_read(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
 {
     volatile stm_word_t *lock = NULL;
     TYPE r_entry_t *r = NULL;
     TYPE w_entry_t *w = NULL;
     stm_word_t lock_value;
+    stm_word_t value;
 
     lock = GET_LOCK_ADDR(addr);
 
@@ -83,7 +84,27 @@ stm_wtetl_read(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
         w = (TYPE w_entry_t *)LOCK_GET_W_ENTRY(lock_value);
         if (tx->w_set.entries <= w && w < tx->w_set.entries + tx->w_set.nb_entries)
         {
-            return *addr;
+            /* Yes: did we previously write the same address? */
+            while (1)
+            {
+                if (addr == w->addr)
+                {
+                    /* Yes: get value from write set (or from memory if mask was empty) */
+                    value = w->value;
+                    break;
+                }
+
+                if (w->next == NULL)
+                {
+                    /* No: get value from memory */
+                    value = *addr;
+                    break;
+                }
+
+                w = w->next;
+            }
+            /* No need to add to read set (will remain valid) */
+            return value;
         }
 
         stm_rollback(tx);
@@ -119,7 +140,7 @@ stm_wtetl_read(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
 }
 
 static inline TYPE w_entry_t *
-stm_wtetl_write(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_t value)
+stm_wbetl_write(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_t value)
 {
     volatile stm_word_t *lock = NULL;
     TYPE r_entry_t *r = NULL;
@@ -146,8 +167,8 @@ stm_wtetl_write(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_t 
                 {
                     // We onw the lock and thre is already
                     // an entry for the current addr
-                    *addr = value;
-                    return w;
+                    prev->value = value;
+                    return prev;
                 }
 
                 if (prev->next == NULL)
@@ -207,7 +228,7 @@ stm_wtetl_write(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_t 
 do_write:
     w->lock = lock;
     w->addr = addr;
-    w->value = *addr;
+    w->value = value;
     w->next = NULL;
 
     if (prev != NULL)
@@ -215,13 +236,13 @@ do_write:
         prev->next = w;
     }
 
-    *addr = value;
+    // *addr = value;
 
     return w;
 }
 
 static inline void
-stm_wtetl_commit(TYPE stm_tx *tx)
+stm_wbetl_commit(TYPE stm_tx *tx)
 {
     TYPE w_entry_t *w;
     TYPE r_entry_t *r;
@@ -233,6 +254,8 @@ stm_wtetl_commit(TYPE stm_tx *tx)
     w = tx->w_set.entries;
     for (uint16_t i = tx->w_set.nb_entries; i > 0; i--, w++)
     {
+        *(w->addr) = w->value;
+
         if (w->next == NULL)
         {
             *(w->lock) = 0x00;
@@ -262,4 +285,4 @@ stm_wtetl_commit(TYPE stm_tx *tx)
     }
 }
 
-#endif /* _RW_LOCKS_WTETL_H_ */
+#endif /* _RW_LOCKS_WBETL_H_ */

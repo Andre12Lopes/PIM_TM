@@ -65,7 +65,22 @@ enum
 
 extern volatile stm_word_t lock_table[LOCK_ARRAY_SIZE];
 
+static void
+stm_rollback(TYPE stm_tx *tx);
+
+#ifdef WRITE_BACK_CTL
+#include "rw_locks_wbctl.h"
+#endif
+
+#ifdef WRITE_BACK_ETL
+#include "rw_locks_wbetl.h"
+#endif
+
+#ifdef WRITE_THROUGH_ETL
 #include "rw_locks_wtetl.h"
+#endif
+
+#include "backoff.h"
 
 static inline void
 int_stm_start(TYPE stm_tx *tx)
@@ -86,6 +101,35 @@ int_stm_start(TYPE stm_tx *tx)
     UPDATE_STATUS(tx->status, TX_ACTIVE);
 }
 
+static void
+stm_rollback(TYPE stm_tx *tx)
+{
+    assert(IS_ACTIVE(tx->status));
+
+    // tx->abort_cycles += perfcounter_get() - tx->time;
+
+#if defined(WRITE_BACK_CTL)
+    stm_wbctl_rollback(tx);
+#elif defined(WRITE_BACK_ETL)
+    stm_wbetl_rollback(tx);
+#elif defined(WRITE_THROUGH_ETL)
+    stm_wtetl_rollback(tx);
+#endif
+
+    tx->aborts++;
+
+#ifdef BACKOFF
+    tx->retries++;
+    if (tx->retries > 3)
+    { /* TUNABLE */
+        backoff(tx, tx->retries);
+    }
+#endif
+
+    /* Set status to ABORTED */
+    SET_STATUS(tx->status, TX_ABORTED);
+}
+
 static inline stm_word_t
 int_stm_load(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
 {
@@ -93,7 +137,13 @@ int_stm_load(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
 
     tx->start_read = perfcounter_config(COUNT_CYCLES, false);
 
+#if defined(WRITE_BACK_CTL)
+    val = stm_wbctl_read(tx, addr);
+#elif defined(WRITE_BACK_ETL)
+    val = stm_wbetl_read(tx, addr);
+#elif defined(WRITE_THROUGH_ETL)
     val = stm_wtetl_read(tx, addr);
+#endif
 
     tx->read_cycles += perfcounter_get() - tx->start_read;
 
@@ -105,7 +155,13 @@ int_stm_store(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_t va
 {
     tx->start_write = perfcounter_config(COUNT_CYCLES, false);
 
+#if defined(WRITE_BACK_CTL)
+    stm_wbctl_write(tx, addr, value);
+#elif defined(WRITE_BACK_ETL)
+    stm_wbetl_write(tx, addr, value);
+#elif defined(WRITE_THROUGH_ETL)
     stm_wtetl_write(tx, addr, value);
+#endif
 
     tx->write_cycles += perfcounter_get() - tx->start_write;
 }
@@ -120,7 +176,13 @@ int_stm_commit(TYPE stm_tx *tx)
     t_process_cycles = perfcounter_get() - tx->time;
     tx->time = perfcounter_config(COUNT_CYCLES, false);
 
-    stm_wtetl_commit(tx);
+#if defined(WRITE_BACK_CTL)
+        stm_wbctl_commit(tx);
+#elif defined(WRITE_BACK_ETL)
+        stm_wbetl_commit(tx);
+#elif defined(WRITE_THROUGH_ETL)
+        stm_wtetl_commit(tx);
+#endif
 
     if (IS_ABORTED(tx->status))
     {

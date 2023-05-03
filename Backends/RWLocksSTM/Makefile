@@ -31,6 +31,16 @@ ifdef BACKOFF
 	DEFINES += -DBACKOFF
 endif
 
+ifdef WRITE_BACK_CTL
+	DEFINES += -DWRITE_BACK_CTL
+else
+	ifdef WRITE_BACK_ETL
+		DEFINES += -DWRITE_BACK_ETL
+	else
+		DEFINES += -DWRITE_THROUGH_ETL
+	endif
+endif
+
 # =============================================================================
 # Rules
 # =============================================================================
