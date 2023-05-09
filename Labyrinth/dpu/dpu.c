@@ -32,10 +32,10 @@ BARRIER_INIT(labyrinth_barr, NR_TASKLETS);
 Tx __mram_noinit tx_mram[NR_TASKLETS];
 #endif
 
-__mram_noinit router_t router;
-__mram_noinit maze_t maze;
-__mram_noinit grid_t grid;
-__mram_noinit grid_t thread_local_grids[NR_TASKLETS];
+__mram router_t router;
+__mram maze_t maze;
+__mram grid_t grid;
+__mram grid_t thread_local_grids[NR_TASKLETS];
 // __mram_noinit list_t pathVectorList;
 
 int
@@ -70,17 +70,18 @@ main()
 
     if (tid == 0)
     {
-        maze_read(&maze);
-        router_alloc(&router, PARAM_XCOST, PARAM_YCOST, PARAM_ZCOST, PARAM_BENDCOST);
         grid_alloc(&grid);
+        maze_read(&maze, &grid);
+        router_alloc(&router, PARAM_XCOST, PARAM_YCOST, PARAM_ZCOST, PARAM_BENDCOST);
     }
     barrier_wait(&labyrinth_barr);
 
     myExpansionQueue = queue_alloc(-1);
+    // printf("> %p\n", myExpansionQueue);
+
     grid_alloc(my_grid);
 
-    // for (int i = tid; i < NUM_PATHS; i += NR_TASKLETS)
-    for (int i = tid; i < 1; i += NR_TASKLETS)
+    for (int i = tid; i < NUM_PATHS; i += NR_TASKLETS)
     {
         mram_read(&(maze.paths[i].src), &src, sizeof(coordinate_t));
         mram_read(&(maze.paths[i].dest), &dest, sizeof(coordinate_t));
@@ -98,21 +99,22 @@ main()
             if (point_vector)
             {
                 // ================ ADD PATH TO GRID ====================
-                // TMGRID_ADDPATH(&grid, point_vector);
-
                 n = vector_get_size(point_vector);
-
+                
                 for (long i = 1; i < (n - 1); i++) 
                 {
-                    __mram_ptr long *gridPointPtr = (__mram_ptr long *)vector_at(point_vector, i);
-                    long value = (long)TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)gridPointPtr);
+                    __mram_ptr grid_point_t *gridPointPtr = 
+                        (__mram_ptr grid_point_t *)vector_at(point_vector, i);
+
+                    int value = 
+                        (int)TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)&(gridPointPtr->value));
 
                     if (value != GRID_POINT_EMPTY)
                     {
                         TM_RESTART_LOOP(tx);
                     }
 
-                    TM_STORE_LOOP(tx, (__mram_ptr uintptr_t *)gridPointPtr, GRID_POINT_FULL);
+                    TM_STORE_LOOP(tx, (__mram_ptr uintptr_t *)&(gridPointPtr->value), GRID_POINT_FULL);
                 }
 
                 if (tx->status == 4)
@@ -125,16 +127,16 @@ main()
                     // Transaction did not abort
                     success = TRUE;                
                 }  
-                
                 // ======================================================
             }
-
         }
 
         TM_COMMIT(tx);
     }
 
-    grid_print(&grid);
+    // grid_print(&grid);
+    // printf("----------------------\n");
+    // grid_print(my_grid);
 
     // get_metrics(tx, tid, NUM_PATHS);
 

@@ -17,10 +17,10 @@
 #endif
 
 /* Initial size of read sets */
-#define R_SET_SIZE 45
+#define R_SET_SIZE 70
 
 /* Initial size of write sets */
-#define W_SET_SIZE 2
+#define W_SET_SIZE 70
 
 typedef int BitMap;
 

@@ -8,12 +8,18 @@ enum config
     QUEUE_GROWTH_FACTOR = 2,
 };
 
+typedef struct data_item
+{
+    intptr_t ptr;      // point value
+    int padding;    // 4 byte padding
+} data_item_t;
+
 typedef struct queue
 {
     long pop;
     long push;
     long capacity;
-    __mram_ptr intptr_t *elements;
+    __mram_ptr data_item_t *elements;
 } queue_t;
 
 __mram_ptr queue_t *
@@ -25,7 +31,7 @@ queue_alloc(long initCapacity)
     {
         long capacity = ((initCapacity < 2) ? 2 : initCapacity);
         queuePtr->elements =
-            (__mram_ptr intptr_t *)mram_malloc(capacity * sizeof(intptr_t));
+            (__mram_ptr data_item_t *)mram_malloc(capacity * sizeof(data_item_t));
 
         if (queuePtr->elements == NULL)
         {
@@ -73,8 +79,8 @@ queue_push(__mram_ptr queue_t *queuePtr, __mram_ptr void *dataPtr)
     if (newPush == pop)
     {
         long newCapacity = capacity * QUEUE_GROWTH_FACTOR;
-        __mram_ptr intptr_t *newElements =
-            (__mram_ptr intptr_t *)mram_malloc(newCapacity * sizeof(intptr_t));
+        __mram_ptr data_item_t *newElements =
+            (__mram_ptr data_item_t *)mram_malloc(newCapacity * sizeof(data_item_t));
 
         if (newElements == NULL)
         {
@@ -82,7 +88,7 @@ queue_push(__mram_ptr queue_t *queuePtr, __mram_ptr void *dataPtr)
         }
 
         long dst = 0;
-        __mram_ptr intptr_t *elements = queuePtr->elements;
+        __mram_ptr data_item_t *elements = queuePtr->elements;
         if (pop < push)
         {
             long src;
@@ -113,7 +119,8 @@ queue_push(__mram_ptr queue_t *queuePtr, __mram_ptr void *dataPtr)
         newPush = push + 1;
     }
 
-    queuePtr->elements[push] = (intptr_t)dataPtr;
+    data_item_t data = { .ptr = (intptr_t)dataPtr, .padding = 0 };
+    queuePtr->elements[push] = data;
     queuePtr->push = newPush;
 
     return TRUE;
@@ -133,10 +140,10 @@ queue_pop(__mram_ptr queue_t *queuePtr)
         return NULL;
     }
 
-    __mram_ptr void *dataPtr = (__mram_ptr void *)queuePtr->elements[newPop];
+    data_item_t data = queuePtr->elements[newPop];
     queuePtr->pop = newPop;
 
-    return dataPtr;
+    return (__mram_ptr void *)data.ptr;
 }
 
 #endif /* _QUEUE_H_ */
