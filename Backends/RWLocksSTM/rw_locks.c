@@ -48,6 +48,12 @@ stm_store(TYPE stm_tx *tx, TYPE_ACC stm_word_t *addr, stm_word_t value)
     int_stm_store(tx, addr, value);
 }
 
+void
+stm_rollback(TYPE stm_tx *tx)
+{
+    stm_rollback(tx);
+}
+
 int
 stm_commit(TYPE stm_tx *tx)
 {

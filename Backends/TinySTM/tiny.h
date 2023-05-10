@@ -17,10 +17,10 @@
 #endif
 
 /* Initial size of read sets */
-#define R_SET_SIZE 45
+#define R_SET_SIZE 70
 
 /* Initial size of write sets */
-#define W_SET_SIZE 2
+#define W_SET_SIZE 70
 
 typedef uintptr_t stm_word_t;
 
@@ -130,6 +130,9 @@ stm_load(TYPE struct stm_tx *tx, volatile TYPE_ACC stm_word_t *addr);
 
 void
 stm_store(TYPE struct stm_tx *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_t value);
+
+void
+stm_rollback(TYPE stm_tx_t *tx);
 
 int
 stm_commit(TYPE struct stm_tx *tx);

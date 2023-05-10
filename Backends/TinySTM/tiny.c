@@ -50,6 +50,12 @@ stm_store(TYPE stm_tx_t *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_t valu
     int_stm_store(tx, addr, value);
 }
 
+void
+stm_rollback(TYPE stm_tx_t *tx)
+{
+    stm_rollback(tx, 0);
+}
+
 int
 stm_commit(TYPE stm_tx_t *tx)
 {

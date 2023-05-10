@@ -40,6 +40,14 @@ typedef stm_tx Tx;
         break;                                                                           \
     }
 
+#define TM_RESTART(tx)                                                                   \
+    stm_rollback(tx);                                                                    \
+    continue;
+
+#define TM_RESTART_LOOP(tx)                                                              \
+    stm_rollback(tx);                                                                    \
+    break;
+
 #define TM_COMMIT(tx)                                                                    \
     stm_commit(tx);                                                                      \
     if ((tx)->status != 4)                                                               \

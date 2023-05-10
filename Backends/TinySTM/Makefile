@@ -5,7 +5,7 @@
 CC 		= dpu-upmem-dpurte-clang
 LD 		= dpu-upmem-dpurte-clang
 
-CFLAGS 	= -Wall -Wextra -Wno-unused-label -Wno-unused-function -O3
+CFLAGS 	= -Wall -Wextra -Wno-unused-label -Wno-unused-function -Os
 
 TM 		= tiny
 TMLIB 	= lib$(TM).a

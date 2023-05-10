@@ -222,7 +222,7 @@ pdo_traceback(__mram_ptr grid_t *gridPtr, __mram_ptr grid_t *myGridPtr,
             if ((curr.x == next.x) && (curr.y == next.y) && (curr.z == next.z))
             {
                 vector_free(pointVectorPtr);
-                puts("[dead]");
+                // puts("[dead]");
 
                 return NULL; /* cannot find path */
             }
