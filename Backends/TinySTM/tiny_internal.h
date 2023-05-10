@@ -120,9 +120,7 @@ stm_allocate_rs_entries(TYPE stm_tx_t *tx, int extend)
 {
     (void)tx;
     (void)extend;
-
-    SET_STATUS(tx->status, TX_ABORTED);
-
+    
     assert(0);
 }
 
@@ -134,8 +132,6 @@ stm_allocate_ws_entries(TYPE stm_tx_t *tx, int extend)
 {
     (void)tx;
     (void)extend;
-
-    SET_STATUS(tx->status, TX_ABORTED);
 
     assert(0);
 }
