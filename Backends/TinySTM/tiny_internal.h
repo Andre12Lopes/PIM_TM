@@ -121,12 +121,8 @@ stm_allocate_rs_entries(TYPE stm_tx_t *tx, int extend)
     (void)tx;
     (void)extend;
 
-    PRINT_DEBUG("==> stm_allocate_rs_entries(%p[%lu-%lu],%d)\n", tx,
-                (unsigned long)tx->start, (unsigned long)tx->end, extend);
-
     SET_STATUS(tx->status, TX_ABORTED);
 
-    printf("[Warning!] Reached RS allocation function, aborting\n");
     assert(0);
 }
 
@@ -139,12 +135,8 @@ stm_allocate_ws_entries(TYPE stm_tx_t *tx, int extend)
     (void)tx;
     (void)extend;
 
-    PRINT_DEBUG("==> stm_allocate_ws_entries(%p[%lu-%lu],%d)\n", tx,
-                (unsigned long)tx->start, (unsigned long)tx->end, extend);
-
     SET_STATUS(tx->status, TX_ABORTED);
 
-    printf("[Warning!] Reached WS allocation function, aborting\n");
     assert(0);
 }
 
@@ -215,8 +207,6 @@ stm_rollback(TYPE stm_tx_t *tx, unsigned int reason)
 {
     (void)reason;
 
-    assert(IS_ACTIVE(tx->status));
-
     tx->abort_cycles += perfcounter_get() - tx->time;
 
 #if defined(WRITE_BACK_CTL)
@@ -281,8 +271,6 @@ static inline int
 int_stm_commit(TYPE stm_tx_t *tx)
 {
     uint64_t t_process_cycles;
-
-    assert(IS_ACTIVE(tx->status));
 
     t_process_cycles = perfcounter_get() - tx->time;
     tx->time = perfcounter_config(COUNT_CYCLES, false);

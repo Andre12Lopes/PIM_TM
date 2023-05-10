@@ -82,11 +82,6 @@ stm_wbctl_rollback(TYPE stm_tx_t *tx)
 {
     TYPE w_entry_t *w;
 
-    PRINT_DEBUG("==> stm_wbctl_rollback(%p[%lu-%lu])\n", tx, (unsigned long)tx->start,
-                (unsigned long)tx->end);
-
-    assert(IS_ACTIVE(tx->status));
-
     if (tx->w_set.nb_acquired > 0)
     {
         w = tx->w_set.entries + tx->w_set.nb_entries;
@@ -116,8 +111,6 @@ stm_wbctl_read(TYPE stm_tx_t *tx, volatile TYPE_ACC stm_word_t *addr)
     stm_word_t l, l2, value, version;
     TYPE r_entry_t *r;
     TYPE w_entry_t *written = NULL;
-
-    assert(IS_ACTIVE(tx->status));
 
     /* Did we previously write the same address? */
     written = stm_has_written(tx, addr);
@@ -270,11 +263,7 @@ do_write:
     w->mask = mask;
     w->lock = lock;
 
-    if (mask == 0)
-    {
-        /* Do not write anything */
-    }
-    else
+    if (mask != 0)
     {
         /* Remember new value */
         w->value = value;
