@@ -144,7 +144,7 @@ main()
                 // ================ ADD PATH TO GRID ====================
                 n = vector_get_size(point_vector);
                 
-                for (long i = 1; i < (n - 1); i++) 
+                for (long i = 1; i < (n - 1); i++)
                 {
                     __mram_ptr grid_point_t *gridPointPtr = 
                         (__mram_ptr grid_point_t *)vector_at(point_vector, i);
@@ -175,9 +175,12 @@ main()
         }
 
         TM_COMMIT(tx);
+
+        n_trans += n - 2;
     }
 
-    get_metrics(tx, tid, NUM_PATHS);
+    n_trans += NUM_PATHS;
+    get_metrics(tx, tid);
 
     return 0;
 }

@@ -22,21 +22,20 @@ start_count(int tid)
     if (tid == 0)
     {
         initial_time = perfcounter_config(COUNT_CYCLES, false);
+        n_trans = 0;
     }
 
     barrier_wait(&barr);
 }
 
 void
-get_metrics(TYPE Tx *tx, int tid, int num_transactions)
+get_metrics(TYPE Tx *tx, int tid)
 {
     barrier_wait(&barr);
 
     if (tid == 0)
     {
         nb_cycles = perfcounter_get() - initial_time;
-
-        n_trans = num_transactions;
 
         n_aborts = 0;
         nb_process_cycles = 0;
@@ -54,22 +53,22 @@ get_metrics(TYPE Tx *tx, int tid, int num_transactions)
         {
             n_aborts += tx->aborts;
 
-            nb_process_cycles += ((double)tx->process_cycles / (num_transactions));
+            nb_process_cycles += ((double)tx->process_cycles / (n_trans));
             nb_process_read_cycles +=
-                ((double)tx->total_read_cycles / (num_transactions));
+                ((double)tx->total_read_cycles / (n_trans));
             nb_process_write_cycles +=
-                ((double)tx->total_write_cycles / (num_transactions));
+                ((double)tx->total_write_cycles / (n_trans));
             nb_process_validation_cycles +=
-                ((double)tx->total_validation_cycles / (num_transactions));
+                ((double)tx->total_validation_cycles / (n_trans));
 
-            nb_commit_cycles += ((double)tx->commit_cycles / (num_transactions));
+            nb_commit_cycles += ((double)tx->commit_cycles / (n_trans));
             nb_commit_validation_cycles +=
-                ((double)tx->total_commit_validation_cycles / (num_transactions));
+                ((double)tx->total_commit_validation_cycles / (n_trans));
 
             nb_wasted_cycles +=
                 ((double)(tx->total_cycles - (tx->process_cycles + tx->commit_cycles))
                 /
-                 (num_transactions));
+                 (n_trans));
         }
         barrier_wait(&barr);
     }

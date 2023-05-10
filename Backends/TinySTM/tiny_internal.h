@@ -45,13 +45,9 @@
 
 enum
 { /* Transaction status */
-    TX_IDLE = 0,
     TX_ACTIVE = 1,
     TX_COMMITTED = (1 << 1),
     TX_ABORTED = (2 << 1),
-    TX_COMMITTING = (1 << 1) | TX_ACTIVE,
-    TX_ABORTING = (2 << 1) | TX_ACTIVE,
-    TX_KILLED = (3 << 1) | TX_ACTIVE,
 };
 
 #define SET_STATUS(s, v) ((s) = (v))

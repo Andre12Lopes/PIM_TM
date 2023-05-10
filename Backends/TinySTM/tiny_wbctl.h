@@ -1,7 +1,7 @@
 #ifndef _TINY_WBCTL_H_
 #define _TINY_WBCTL_H_
 
-static inline int
+static int
 stm_wbctl_validate(TYPE stm_tx_t *tx)
 {
     TYPE r_entry_t *r;
@@ -52,7 +52,7 @@ stm_wbctl_validate(TYPE stm_tx_t *tx)
 /*
  * Extend snapshot range.
  */
-static inline int
+static int
 stm_wbctl_extend(TYPE stm_tx_t *tx)
 {
     stm_word_t now;
@@ -77,7 +77,7 @@ stm_wbctl_extend(TYPE stm_tx_t *tx)
     return 0;
 }
 
-static inline void
+static void
 stm_wbctl_rollback(TYPE stm_tx_t *tx)
 {
     TYPE w_entry_t *w;
@@ -104,7 +104,7 @@ stm_wbctl_rollback(TYPE stm_tx_t *tx)
     }
 }
 
-static inline stm_word_t
+static stm_word_t
 stm_wbctl_read(TYPE stm_tx_t *tx, volatile TYPE_ACC stm_word_t *addr)
 {
     volatile stm_word_t *lock;
@@ -201,7 +201,7 @@ restart_no_load:
     return value;
 }
 
-static inline TYPE w_entry_t *
+static TYPE w_entry_t *
 stm_wbctl_write(TYPE stm_tx_t *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_t value,
                 stm_word_t mask)
 {
@@ -274,7 +274,7 @@ do_write:
     return w;
 }
 
-static inline int
+static int
 stm_wbctl_commit(TYPE stm_tx_t *tx)
 {
     TYPE w_entry_t *w;
@@ -349,11 +349,6 @@ stm_wbctl_commit(TYPE stm_tx_t *tx)
         if (w->mask == ~(stm_word_t)0)
         {
             ATOMIC_STORE_VALUE(w->addr, w->value);
-        }
-        else if (w->mask != 0)
-        {
-            value = (ATOMIC_LOAD(w->addr) & ~w->mask) | (w->value & w->mask);
-            ATOMIC_STORE_VALUE(w->addr, value);
         }
 
         /* Only drop lock for last covered address in write set (cannot be "no drop") */
