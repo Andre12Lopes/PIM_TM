@@ -176,11 +176,10 @@ main()
 
         TM_COMMIT(tx);
 
-        n_trans += n - 2;
+        thread_local_num_transactions[tid] += n - 2;
     }
 
-    n_trans += NUM_PATHS;
-    get_metrics(tx, tid);
+    get_metrics(tx, tid, NUM_PATHS);
 
     return 0;
 }

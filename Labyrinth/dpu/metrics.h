@@ -16,26 +16,36 @@ __host uint32_t nb_wasted_cycles;
 __host uint32_t n_aborts;
 __host uint32_t n_trans;
 
+int thread_local_num_transactions[NR_TASKLETS];
+
 void
 start_count(int tid)
 {
     if (tid == 0)
     {
         initial_time = perfcounter_config(COUNT_CYCLES, false);
-        n_trans = 0;
     }
 
     barrier_wait(&barr);
 }
 
 void
-get_metrics(TYPE Tx *tx, int tid)
+get_metrics(TYPE Tx *tx, int tid, int num_transactions)
 {
     barrier_wait(&barr);
 
     if (tid == 0)
     {
         nb_cycles = perfcounter_get() - initial_time;
+
+        n_trans = 0;
+
+        for (int i = 0; i < NR_TASKLETS; ++i)
+        {
+            n_trans += thread_local_num_transactions[i];
+        }
+
+        n_trans += num_transactions;
 
         n_aborts = 0;
         nb_process_cycles = 0;
