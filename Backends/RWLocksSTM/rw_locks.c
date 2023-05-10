@@ -49,7 +49,7 @@ stm_store(TYPE stm_tx *tx, TYPE_ACC stm_word_t *addr, stm_word_t value)
 }
 
 void
-stm_rollback(TYPE stm_tx *tx)
+stm_abort(TYPE stm_tx *tx)
 {
     stm_rollback(tx);
 }

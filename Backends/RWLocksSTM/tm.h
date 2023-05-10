@@ -41,11 +41,11 @@ typedef stm_tx Tx;
     }
 
 #define TM_RESTART(tx)                                                                   \
-    stm_rollback(tx);                                                                    \
+    stm_abort(tx);                                                                       \
     continue;
 
 #define TM_RESTART_LOOP(tx)                                                              \
-    stm_rollback(tx);                                                                    \
+    stm_abort(tx);                                                                       \
     break;
 
 #define TM_COMMIT(tx)                                                                    \

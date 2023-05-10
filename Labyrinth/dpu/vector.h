@@ -83,6 +83,7 @@ vector_at(__mram_ptr vector_t *vectorPtr, long i)
 void
 vector_free(__mram_ptr vector_t *vectorPtr)
 {
+    (void)vectorPtr;
     // mram_free(vectorPtr->elements);
     // mram_free(vectorPtr);
 }
