@@ -2,6 +2,7 @@
 #define _MAZE_H_
 
 #include <string.h>
+#include <dpu_alloc.h>
 
 enum
 {
@@ -30,15 +31,15 @@ typedef struct coordinate
     long z;
 } coordinate_t;
 
-typedef struct path
+typedef struct pair 
 {
-    coordinate_t src;
-    coordinate_t dest;
-} path_t;
+    __mram_ptr void *firstPtr;
+    __mram_ptr void *secondPtr;
+} pair_t;
 
 typedef struct maze
 {
-    path_t paths[NUM_PATHS];
+    __mram_ptr queue_t *workQueuePtr;
 } maze_t;
 
 void
@@ -54,9 +55,9 @@ grid_alloc(__mram_ptr grid_t *grid)
 void
 grid_copy(__mram_ptr grid_t *dstGridPtr, __mram_ptr grid_t *srcGridPtr)
 {
-    assert(srcGridPtr->height == dstGridPtr->height);
-    assert(srcGridPtr->width == dstGridPtr->width);
-    assert(srcGridPtr->depth == dstGridPtr->depth);
+    // assert(srcGridPtr->height == dstGridPtr->height);
+    // assert(srcGridPtr->width == dstGridPtr->width);
+    // assert(srcGridPtr->depth == dstGridPtr->depth);
 
     memcpy(dstGridPtr->points, srcGridPtr->points, sizeof(dstGridPtr->points));
 }
@@ -86,12 +87,12 @@ grid_get_point_indices(__mram_ptr grid_t *gridPtr, __mram_ptr grid_point_t *grid
     (*xPtr) = (index / gridPtr->height) % gridPtr->height;
 }
 
-int
-grid_get_point(__mram_ptr grid_t *gridPtr, long x, long y, long z)
-{
-    grid_point_t point = *(grid_get_point_ref(gridPtr, x, y, z));
-    return point.value;
-}
+// int
+// grid_get_point(__mram_ptr grid_t *gridPtr, long x, long y, long z)
+// {
+//     grid_point_t point = *(grid_get_point_ref(gridPtr, x, y, z));
+//     return point.value;
+// }
 
 bool_t
 grid_is_point_empty(__mram_ptr grid_t *gridPtr, long x, long y, long z)
@@ -119,67 +120,102 @@ grid_is_point_valid(__mram_ptr grid_t *gridPtr, long x, long y, long z)
     return TRUE;
 }
 
-void
-grid_print(__mram_ptr grid_t *gridPtr)
+// void
+// grid_print(__mram_ptr grid_t *gridPtr)
+// {
+//     for (int z = 0; z < gridPtr->depth; ++z)
+//     {
+//         printf("[z = %d]\n", z);
+//         for (int x = 0; x < gridPtr->width; ++x)
+//         {
+//             for (int y = 0; y < gridPtr->height; ++y)
+//             {
+//                 printf("%4d", grid_get_point_ref(gridPtr, x, y, z)->value);
+//             }
+//             puts("");
+//         }
+//     }
+// }
+
+// void
+// grid_print_addr(__mram_ptr grid_t *gridPtr)
+// {
+//     for (int z = 0; z < gridPtr->depth; ++z)
+//     {
+//         printf("[z = %d]\n", z);
+//         for (int x = 0; x < gridPtr->width; ++x)
+//         {
+//             for (int y = 0; y < gridPtr->height; ++y)
+//             {
+//                 printf("  %p", grid_get_point_ref(gridPtr, x, y, z));
+//             }
+//             puts("");
+//         }
+//     }
+// }
+
+__mram_ptr coordinate_t *
+coordinate_alloc(long x, long y, long z)
 {
-    for (int z = 0; z < gridPtr->depth; ++z)
+    __mram_ptr coordinate_t *coordinatePtr;
+
+    coordinatePtr = (__mram_ptr coordinate_t *)mram_malloc(sizeof(coordinate_t));
+    
+    if (coordinatePtr) 
     {
-        printf("[z = %d]\n", z);
-        for (int x = 0; x < gridPtr->width; ++x)
-        {
-            for (int y = 0; y < gridPtr->height; ++y)
-            {
-                printf("%4d", grid_get_point_ref(gridPtr, x, y, z)->value);
-            }
-            puts("");
-        }
+        coordinatePtr->x = x;
+        coordinatePtr->y = y;
+        coordinatePtr->z = z;
     }
+
+    return coordinatePtr;
 }
 
-void
-grid_print_addr(__mram_ptr grid_t *gridPtr)
+__mram_ptr pair_t *
+pair_alloc(__mram_ptr void *firstPtr, __mram_ptr void *secondPtr)
 {
-    for (int z = 0; z < gridPtr->depth; ++z)
+    __mram_ptr pair_t *pairPtr;
+
+    pairPtr = (__mram_ptr pair_t *)mram_malloc(sizeof(pair_t));
+    
+    if (pairPtr != NULL) 
     {
-        printf("[z = %d]\n", z);
-        for (int x = 0; x < gridPtr->width; ++x)
-        {
-            for (int y = 0; y < gridPtr->height; ++y)
-            {
-                printf("  %p", grid_get_point_ref(gridPtr, x, y, z));
-            }
-            puts("");
-        }
+        pairPtr->firstPtr = firstPtr;
+        pairPtr->secondPtr = secondPtr;
     }
+
+    return pairPtr;
 }
 
 void
 maze_read(__mram_ptr maze_t *maze, __mram_ptr grid_t *grid)
 {
+    maze->workQueuePtr = queue_alloc(NUM_PATHS);
+    // assert(maze->workQueuePtr);
+
     for (long i = 0; i < NUM_PATHS; ++i)
     {
-        if (!grid_is_point_valid(grid, PATHS[i][0], PATHS[i][1], PATHS[i][2]) ||
-            !grid_is_point_valid(grid, PATHS[i][3], PATHS[i][4], PATHS[i][5]))
-        {
-            printf("[Error] Invalid pint\n");
-            assert(1);
-        }
+        // if (!grid_is_point_valid(grid, PATHS[i][0], PATHS[i][1], PATHS[i][2]) ||
+        //     !grid_is_point_valid(grid, PATHS[i][3], PATHS[i][4], PATHS[i][5]))
+        // {
+            // printf("[Error] Invalid pint\n");
+            // assert(1);
+        // }
 
-        maze->paths[i].src.x = PATHS[i][0];
-        maze->paths[i].src.y = PATHS[i][1];
-        maze->paths[i].src.z = PATHS[i][2];
+        __mram_ptr coordinate_t *srcPtr = 
+            coordinate_alloc(PATHS[i][0], PATHS[i][1], PATHS[i][2]);
+        __mram_ptr coordinate_t *dstPtr = 
+            coordinate_alloc(PATHS[i][3], PATHS[i][4], PATHS[i][5]);
+        // assert(srcPtr);
+        // assert(dstPtr);
 
-        maze->paths[i].dest.x = PATHS[i][3];
-        maze->paths[i].dest.y = PATHS[i][4];
-        maze->paths[i].dest.z = PATHS[i][5];
+        __mram_ptr pair_t *coordinatePairPtr = pair_alloc(srcPtr, dstPtr);
+        // assert(coordinatePairPtr);
 
-        // grid_set_point(grid, PATHS[i][0], PATHS[i][1], PATHS[i][2], GRID_POINT_FULL);
-        // grid_set_point(grid, PATHS[i][3], PATHS[i][4], PATHS[i][5], GRID_POINT_FULL);
+        queue_push(maze->workQueuePtr, (__mram_ptr void *)coordinatePairPtr);
 
-        grid_get_point_ref(grid, maze->paths[i].src.x, maze->paths[i].src.y, 
-                           maze->paths[i].src.z)->value = GRID_POINT_FULL;
-        grid_get_point_ref(grid, maze->paths[i].dest.x, maze->paths[i].dest.y, 
-                           maze->paths[i].dest.z)->value = GRID_POINT_FULL;
+        grid_get_point_ref(grid, srcPtr->x, srcPtr->y, srcPtr->z)->value = GRID_POINT_FULL;
+        grid_get_point_ref(grid, dstPtr->x, dstPtr->y, dstPtr->z)->value = GRID_POINT_FULL;
     }
 }
 

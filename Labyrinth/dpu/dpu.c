@@ -5,10 +5,8 @@
 #include <mram.h>
 #include <perfcounter.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <stdlib.h>
 
-#include <random.h>
 #include <tm.h>
 
 #include "metrics.h"
@@ -36,7 +34,6 @@ __mram router_t router;
 __mram maze_t maze;
 __mram grid_t grid;
 __mram grid_t thread_local_grids[NR_TASKLETS];
-// __mram_noinit list_t pathVectorList;
 
 int
 main()
@@ -45,7 +42,9 @@ main()
     uint64_t s;
     int tid;
 
-    __dma_aligned coordinate_t src, dest;
+    __mram_ptr coordinate_t *src;
+    __mram_ptr coordinate_t *dest;
+    __mram_ptr pair_t *coordinatePairPtr;
     __mram_ptr grid_t *my_grid;
     __mram_ptr queue_t *myExpansionQueue;
     __mram_ptr vector_t *point_vector;
@@ -72,19 +71,63 @@ main()
     {
         grid_alloc(&grid);
         maze_read(&maze, &grid);
-        router_alloc(&router, PARAM_XCOST, PARAM_YCOST, PARAM_ZCOST, PARAM_BENDCOST);
+        // router_alloc(&router, PARAM_XCOST, PARAM_YCOST, PARAM_ZCOST, PARAM_BENDCOST);
+        router.x_cost = PARAM_XCOST;
+        router.y_cost = PARAM_YCOST;
+        router.z_cost = PARAM_ZCOST;
+        router.bend_cost = PARAM_BENDCOST;
     }
     barrier_wait(&labyrinth_barr);
 
     myExpansionQueue = queue_alloc(-1);
-    // printf("> %p\n", myExpansionQueue);
 
     grid_alloc(my_grid);
 
-    for (int i = tid; i < NUM_PATHS; i += NR_TASKLETS)
+    while(1)
     {
-        mram_read(&(maze.paths[i].src), &src, sizeof(coordinate_t));
-        mram_read(&(maze.paths[i].dest), &dest, sizeof(coordinate_t));
+        TM_START(tx);
+
+        int pop = (int)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->pop));
+        int push = (int)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->push));
+        int capacity = (int)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->capacity));
+
+        // if (queue_is_empty(maze.workQueuePtr))
+        if (((pop + 1) % capacity) == push)
+        {
+            coordinatePairPtr = NULL;
+        }
+        else 
+        {
+            pop = (int)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->pop));
+            push = (int)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->push));
+            capacity = (int)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->capacity));
+            
+            int newPop = (pop + 1) % capacity;
+            if (newPop == push) 
+            {
+                coordinatePairPtr = NULL;
+            }
+            else
+            {
+                coordinatePairPtr = 
+                    (__mram_ptr pair_t *)TM_LOAD(tx, &(maze.workQueuePtr->elements[newPop].ptr));
+
+                TM_STORE(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->pop), newPop);
+            }
+        }
+
+        TM_COMMIT(tx);
+
+        if (coordinatePairPtr == NULL) 
+        {
+            break;
+        }
+
+        src = (__mram_ptr coordinate_t *)coordinatePairPtr->firstPtr;
+        dest = (__mram_ptr coordinate_t *)coordinatePairPtr->secondPtr;
+
+        // printf("Expansion (%ld, %ld, %ld) -> (%ld, %ld, %ld) | TID = %d:\n", 
+        //        src->x, src->y, src->z, dest->x, dest->y, dest->z, tid);
 
         success = FALSE;
         point_vector = NULL;
@@ -92,9 +135,9 @@ main()
         TM_START(tx);
 
         grid_copy(my_grid, &grid);
-        if (pdo_expansion(&router, my_grid, myExpansionQueue, &src, &dest))
+        if (pdo_expansion(&router, my_grid, myExpansionQueue, src, dest))
         {
-            point_vector = pdo_traceback(&grid, my_grid, &dest, PARAM_BENDCOST);
+            point_vector = pdo_traceback(&grid, my_grid, dest, PARAM_BENDCOST);
 
             if (point_vector)
             {
@@ -134,11 +177,7 @@ main()
         TM_COMMIT(tx);
     }
 
-    // grid_print(&grid);
-    // printf("----------------------\n");
-    // grid_print(my_grid);
-
-    // get_metrics(tx, tid, NUM_PATHS);
+    get_metrics(tx, tid, NUM_PATHS);
 
     return 0;
 }

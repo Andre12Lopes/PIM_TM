@@ -54,7 +54,7 @@ vector_push_back(__mram_ptr vector_t *vectorPtr, __mram_ptr void *dataPtr)
             newElements[i] = vectorPtr->elements[i];
         }
 
-        mram_free(vectorPtr->elements);
+        // mram_free(vectorPtr->elements);
         vectorPtr->elements = newElements;
     }
 
@@ -83,8 +83,8 @@ vector_at(__mram_ptr vector_t *vectorPtr, long i)
 void
 vector_free(__mram_ptr vector_t *vectorPtr)
 {
-    mram_free(vectorPtr->elements);
-    mram_free(vectorPtr);
+    // mram_free(vectorPtr->elements);
+    // mram_free(vectorPtr);
 }
 
 #endif /* _VECTOR_H_ */

@@ -10,15 +10,18 @@ enum config
 
 typedef struct data_item
 {
-    intptr_t ptr;      // point value
+    uintptr_t ptr;      // point value
     int padding;    // 4 byte padding
 } data_item_t;
 
 typedef struct queue
 {
-    long pop;
-    long push;
-    long capacity;
+    int pop;
+    // int padding_1;
+    int push;
+    // int padding_2;
+    int capacity;
+    // int padding_3;
     __mram_ptr data_item_t *elements;
 } queue_t;
 
@@ -29,13 +32,13 @@ queue_alloc(long initCapacity)
 
     if (queuePtr)
     {
-        long capacity = ((initCapacity < 2) ? 2 : initCapacity);
+        int capacity = ((initCapacity < 2) ? 2 : initCapacity);
         queuePtr->elements =
             (__mram_ptr data_item_t *)mram_malloc(capacity * sizeof(data_item_t));
 
         if (queuePtr->elements == NULL)
         {
-            mram_free(queuePtr);
+            // mram_free(queuePtr);
             return NULL;
         }
 
@@ -57,9 +60,9 @@ queue_clear(__mram_ptr queue_t *queuePtr)
 bool_t
 queue_is_empty(__mram_ptr queue_t *queuePtr)
 {
-    long pop = queuePtr->pop;
-    long push = queuePtr->push;
-    long capacity = queuePtr->capacity;
+    int pop = queuePtr->pop;
+    int push = queuePtr->push;
+    int capacity = queuePtr->capacity;
 
     return (((pop + 1) % capacity == push) ? TRUE : FALSE);
 }
@@ -67,18 +70,18 @@ queue_is_empty(__mram_ptr queue_t *queuePtr)
 bool_t
 queue_push(__mram_ptr queue_t *queuePtr, __mram_ptr void *dataPtr)
 {
-    long pop = queuePtr->pop;
-    long push = queuePtr->push;
-    long capacity = queuePtr->capacity;
+    int pop = queuePtr->pop;
+    int push = queuePtr->push;
+    int capacity = queuePtr->capacity;
 
     assert(pop != push);
 
     /* Need to resize */
-    long newPush = (push + 1) % capacity;
+    int newPush = (push + 1) % capacity;
 
     if (newPush == pop)
     {
-        long newCapacity = capacity * QUEUE_GROWTH_FACTOR;
+        int newCapacity = capacity * QUEUE_GROWTH_FACTOR;
         __mram_ptr data_item_t *newElements =
             (__mram_ptr data_item_t *)mram_malloc(newCapacity * sizeof(data_item_t));
 
@@ -110,7 +113,7 @@ queue_push(__mram_ptr queue_t *queuePtr, __mram_ptr void *dataPtr)
             }
         }
 
-        mram_free(elements);
+        // mram_free(elements);
 
         queuePtr->elements = newElements;
         queuePtr->pop = newCapacity - 1;
@@ -119,7 +122,7 @@ queue_push(__mram_ptr queue_t *queuePtr, __mram_ptr void *dataPtr)
         newPush = push + 1;
     }
 
-    data_item_t data = { .ptr = (intptr_t)dataPtr, .padding = 0 };
+    data_item_t data = { .ptr = (uintptr_t)dataPtr, .padding = 0 };
     queuePtr->elements[push] = data;
     queuePtr->push = newPush;
 
@@ -129,11 +132,11 @@ queue_push(__mram_ptr queue_t *queuePtr, __mram_ptr void *dataPtr)
 __mram_ptr void *
 queue_pop(__mram_ptr queue_t *queuePtr)
 {
-    long pop = queuePtr->pop;
-    long push = queuePtr->push;
-    long capacity = queuePtr->capacity;
+    int pop = queuePtr->pop;
+    int push = queuePtr->push;
+    int capacity = queuePtr->capacity;
 
-    long newPop = (pop + 1) % capacity;
+    int newPop = (pop + 1) % capacity;
 
     if (newPop == push)
     {

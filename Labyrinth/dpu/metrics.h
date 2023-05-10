@@ -30,50 +30,49 @@ start_count(int tid)
 void
 get_metrics(TYPE Tx *tx, int tid, int num_transactions)
 {
-    // barrier_wait(&barr);
+    barrier_wait(&barr);
 
-    // if (tid == 0)
-    // {
-    //     nb_cycles = perfcounter_get() - initial_time;
+    if (tid == 0)
+    {
+        nb_cycles = perfcounter_get() - initial_time;
 
-    //     n_trans = num_transactions;
+        n_trans = num_transactions;
 
-    //     n_aborts = 0;
-    //     nb_process_cycles = 0;
-    //     nb_commit_cycles = 0;
-    //     nb_wasted_cycles = 0;
-    //     nb_process_read_cycles = 0;
-    //     nb_process_write_cycles = 0;
-    //     nb_process_validation_cycles = 0;
-    //     nb_commit_validation_cycles = 0;
-    // }
+        n_aborts = 0;
+        nb_process_cycles = 0;
+        nb_commit_cycles = 0;
+        nb_wasted_cycles = 0;
+        nb_process_read_cycles = 0;
+        nb_process_write_cycles = 0;
+        nb_process_validation_cycles = 0;
+        nb_commit_validation_cycles = 0;
+    }
 
-    // for (int i = 0; i < NR_TASKLETS; ++i)
-    // {
-    //     if (tid == i)
-    //     {
-    //         n_aborts += tx->aborts;
+    for (int i = 0; i < NR_TASKLETS; ++i)
+    {
+        if (tid == i)
+        {
+            n_aborts += tx->aborts;
 
-    //         nb_process_cycles += ((double)tx->process_cycles / (num_transactions));
-    //         nb_process_read_cycles +=
-    //             ((double)tx->total_read_cycles / (num_transactions));
-    //         nb_process_write_cycles +=
-    //             ((double)tx->total_write_cycles / (num_transactions));
-    //         nb_process_validation_cycles +=
-    //             ((double)tx->total_validation_cycles / (num_transactions));
+            nb_process_cycles += ((double)tx->process_cycles / (num_transactions));
+            nb_process_read_cycles +=
+                ((double)tx->total_read_cycles / (num_transactions));
+            nb_process_write_cycles +=
+                ((double)tx->total_write_cycles / (num_transactions));
+            nb_process_validation_cycles +=
+                ((double)tx->total_validation_cycles / (num_transactions));
 
-    //         nb_commit_cycles += ((double)tx->commit_cycles / (num_transactions));
-    //         nb_commit_validation_cycles +=
-    //             ((double)tx->total_commit_validation_cycles / (num_transactions));
+            nb_commit_cycles += ((double)tx->commit_cycles / (num_transactions));
+            nb_commit_validation_cycles +=
+                ((double)tx->total_commit_validation_cycles / (num_transactions));
 
-    //         nb_wasted_cycles +=
-    //             ((double)(tx->total_cycles - (tx->process_cycles + tx->commit_cycles))
-    //             /
-    //              (num_transactions));
-    //     }
-
-    //     barrier_wait(&barr);
-    // }
+            nb_wasted_cycles +=
+                ((double)(tx->total_cycles - (tx->process_cycles + tx->commit_cycles))
+                /
+                 (num_transactions));
+        }
+        barrier_wait(&barr);
+    }
 }
 
 #endif /* _METRICS_H_ */

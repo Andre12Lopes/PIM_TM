@@ -77,7 +77,8 @@ pexpand_neighbor(__mram_ptr grid_t *myGridPtr, long x, long y, long z, int v,
 
 static bool_t
 pdo_expansion(__mram_ptr router_t *routerPtr, __mram_ptr grid_t *myGridPtr,
-              __mram_ptr queue_t *queuePtr, coordinate_t *srcPtr, coordinate_t *dstPtr)
+              __mram_ptr queue_t *queuePtr, __mram_ptr coordinate_t *srcPtr, 
+              __mram_ptr coordinate_t *dstPtr)
 {
     __mram_ptr grid_point_t *srcGridPointPtr;
     __mram_ptr grid_point_t *dstGridPointPtr;
@@ -118,8 +119,8 @@ pdo_expansion(__mram_ptr router_t *routerPtr, __mram_ptr grid_t *myGridPtr,
         pexpand_neighbor(myGridPtr, x, y, z - 1, (value + routerPtr->z_cost), queuePtr);
     }
 
-    printf("Expansion (%li, %li, %li) -> (%li, %li, %li):\n", srcPtr->x, srcPtr->y,
-           srcPtr->z, dstPtr->x, dstPtr->y, dstPtr->z);
+    // printf("Expansion (%li, %li, %li) -> (%li, %li, %li):\n", srcPtr->x, srcPtr->y,
+    //        srcPtr->z, dstPtr->x, dstPtr->y, dstPtr->z);
     // printf("Path found: %d\n", isPathFound);
     // grid_print(myGridPtr);
 
@@ -140,7 +141,7 @@ traceToNeighbor(__mram_ptr grid_t *myGridPtr, point_t *currPtr, point_t *movePtr
         !grid_is_point_empty(myGridPtr, x, y, z) &&
         !grid_is_point_full(myGridPtr, x, y, z))
     {
-        value = grid_get_point(myGridPtr, x, y, z);
+        value = grid_get_point_ref(myGridPtr, x, y, z)->value;
         b = 0;
 
         if (useMomentum && (currPtr->momentum != movePtr->momentum))
@@ -161,7 +162,7 @@ traceToNeighbor(__mram_ptr grid_t *myGridPtr, point_t *currPtr, point_t *movePtr
 
 static __mram_ptr vector_t *
 pdo_traceback(__mram_ptr grid_t *gridPtr, __mram_ptr grid_t *myGridPtr,
-              coordinate_t *dstPtr, long bendCost)
+              __mram_ptr coordinate_t *dstPtr, long bendCost)
 {
     __mram_ptr vector_t *pointVectorPtr;
     point_t next;
@@ -173,12 +174,12 @@ pdo_traceback(__mram_ptr grid_t *gridPtr, __mram_ptr grid_t *myGridPtr,
     next.x = dstPtr->x;
     next.y = dstPtr->y;
     next.z = dstPtr->z;
-    next.value = grid_get_point(myGridPtr, next.x, next.y, next.z);
+    next.value = grid_get_point_ref(myGridPtr, next.x, next.y, next.z)->value;
     next.momentum = MOMENTUM_ZERO;
 
     while (1)
     {
-        printf("(%li, %li, %li)\n", next.x, next.y, next.z);
+        // printf("(%li, %li, %li)\n", next.x, next.y, next.z);
         
         __mram_ptr grid_point_t *gridPointPtr =
             grid_get_point_ref(gridPtr, next.x, next.y, next.z);
