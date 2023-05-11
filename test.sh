@@ -2,7 +2,7 @@
 
 if [[ $# != 3 ]]; then
 	echo "Invalid number of parameters"
-	echo "Usage: ./test.sh [backend {norec|rwlocks|tiny_wbctl|tiny_wbetl|tiny_wtetl}] [benchmark {bank|linkedlist|kmeans}] [contention {e.g. #bank accounts}]"
+	echo "Usage: ./test.sh [backend {norec|rwlocks_wbctl|rwlocks_wbetl|rwlocks_wtetl|tiny_wbctl|tiny_wbetl|tiny_wtetl}] [benchmark {bank|linkedlist|kmeans|labyrinth}] [contention]"
 	exit 1
 fi
 
