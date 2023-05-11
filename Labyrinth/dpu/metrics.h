@@ -5,7 +5,7 @@ BARRIER_INIT(barr, NR_TASKLETS);
 
 perfcounter_t initial_time;
 
-__host uint32_t nb_cycles;
+__host uint64_t nb_cycles;
 __host uint32_t nb_process_cycles;
 __host uint32_t nb_process_read_cycles;
 __host uint32_t nb_process_write_cycles;
@@ -38,7 +38,7 @@ get_metrics(TYPE Tx *tx, int tid, int num_transactions)
     {
         nb_cycles = perfcounter_get() - initial_time;
 
-        n_trans = 0;
+	n_trans = 0;
 
         for (int i = 0; i < NR_TASKLETS; ++i)
         {
@@ -62,7 +62,7 @@ get_metrics(TYPE Tx *tx, int tid, int num_transactions)
         if (tid == i)
         {
             n_aborts += tx->aborts;
-
+	    
             nb_process_cycles += ((double)tx->process_cycles / (n_trans));
             nb_process_read_cycles +=
                 ((double)tx->total_read_cycles / (n_trans));
@@ -85,3 +85,4 @@ get_metrics(TYPE Tx *tx, int tid, int num_transactions)
 }
 
 #endif /* _METRICS_H_ */
+

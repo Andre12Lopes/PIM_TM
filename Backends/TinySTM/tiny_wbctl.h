@@ -280,7 +280,7 @@ stm_wbctl_commit(TYPE stm_tx_t *tx)
     TYPE w_entry_t *w;
     stm_word_t t;
     int i;
-    stm_word_t l, l1, value;
+    stm_word_t l, l1;
     perfcounter_t s_time;
 
     /* Acquire locks (in reverse order) */

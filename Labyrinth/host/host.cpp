@@ -6,7 +6,7 @@ using namespace dpu;
 int
 main(void)
 {
-    std::vector<std::vector<uint32_t>> nbCycles(1);
+    std::vector<std::vector<uint64_t>> nbCycles(1);
     std::vector<std::vector<uint32_t>> clocksPerSec(1);
     std::vector<std::vector<uint32_t>> nAborts(1);
     std::vector<std::vector<uint32_t>> nTransactions(1);
