@@ -17,10 +17,10 @@
 #endif
 
 /* Initial size of read sets */
-#define R_SET_SIZE 100
+#define R_SET_SIZE 45
 
 /* Initial size of write sets */
-#define W_SET_SIZE 100
+#define W_SET_SIZE 2
 
 typedef uintptr_t stm_word_t;
 
