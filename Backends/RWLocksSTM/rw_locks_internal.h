@@ -68,6 +68,27 @@ extern volatile stm_word_t lock_table[LOCK_ARRAY_SIZE];
 static void
 stm_rollback(TYPE stm_tx *tx);
 
+/*
+ * Check if address has been written previously.
+ */
+static inline TYPE w_entry_t *
+stm_has_written(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
+{
+    TYPE w_entry_t *w;
+
+    /* Look for write */
+    w = tx->w_set.entries;
+    for (int i = tx->w_set.nb_entries; i > 0; i--, w++)
+    {
+        if (w->addr == addr)
+        {
+            return w;
+        }
+    }
+
+    return NULL;
+}
+
 #ifdef WRITE_BACK_CTL
 #include "rw_locks_wbctl.h"
 #endif

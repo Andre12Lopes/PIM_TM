@@ -8,8 +8,8 @@ CPP			= g++
 NR_TASKLETS = 11
 
 COMMON_FLAGS = -Wall -Wextra -Wno-unused-label -Wno-unused-function
-DPU_FLAGS	= $(COMMON_FLAGS) -O3 --std=c11 -I../Lib -I../Backends/$(FOLDER)
-HOST_FLAGS	= $(COMMON_FLAGS) -O3 --std=c++11 -DNR_TASKLETS=$(NR_TASKLETS)
+DPU_FLAGS	= $(COMMON_FLAGS) -O0 --std=c11 -I../Lib -I../Backends/$(FOLDER)
+HOST_FLAGS	= $(COMMON_FLAGS) -O0 --std=c++11 -DNR_TASKLETS=$(NR_TASKLETS)
 
 LDFLAGS  	= -L../Backends/$(FOLDER)
 LIBS     	= -l$(LIB)

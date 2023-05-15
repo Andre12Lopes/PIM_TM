@@ -17,10 +17,10 @@
 #endif
 
 /* Initial size of read sets */
-#define R_SET_SIZE 45
+#define R_SET_SIZE 4
 
 /* Initial size of write sets */
-#define W_SET_SIZE 2
+#define W_SET_SIZE 4
 
 typedef uintptr_t stm_word_t;
 
@@ -42,6 +42,7 @@ typedef struct w_entry
     volatile TYPE_ACC stm_word_t *addr; /* Address written */
     stm_word_t value;                   /* New (write-back) value */
     TYPE struct w_entry *next;          /* Next address covered by same lock */
+    uint8_t no_drop;                    /* Should we drop lock upon abort? */
 } w_entry_t;
 
 typedef struct w_set

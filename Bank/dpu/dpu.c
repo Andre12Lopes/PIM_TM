@@ -16,7 +16,7 @@ BARRIER_INIT(my_barrier, NR_TASKLETS);
 #define N_TRANSACTIONS 1000
 
 #ifndef N_ACCOUNTS
-#define N_ACCOUNTS 800
+#define N_ACCOUNTS 1000
 #endif
 
 #include "metrics.h"
@@ -73,6 +73,21 @@ main()
         rb = RAND_R_FNC(s) % N_ACCOUNTS;
         rc = RAND_R_FNC(s) % N_ACCOUNTS;
         rd = RAND_R_FNC(s) % N_ACCOUNTS;
+        
+        // if (tid == 0)
+        // {
+        //     ra = 3;
+        //     rb = 3;
+        //     rc = 4;
+        //     rd = 3;
+        // }
+        // else
+        // {
+        //     ra = 7;
+        //     rb = 9;
+        //     rc = 8;
+        //     rd = 3;
+        // }
 
         TM_START(tx);
 
