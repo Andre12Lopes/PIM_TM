@@ -3,7 +3,7 @@
 
 perfcounter_t initial_time;
 
-__host uint32_t nb_cycles;
+__host uint64_t nb_cycles;
 __host uint32_t nb_process_cycles;
 __host uint32_t nb_process_read_cycles;
 __host uint32_t nb_process_write_cycles;
