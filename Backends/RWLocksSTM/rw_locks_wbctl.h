@@ -131,15 +131,23 @@ stm_wbctl_write(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_t 
     lock = GET_LOCK_ADDR(addr);
 
 restart:
-    hardware_acquire_lock(lock);
+    // hardware_acquire_lock(lock);
     lock_value = *lock;
     if (LOCK_GET_OWNED_WRITE(lock_value))
     {
-        hardware_release_lock(lock);
-
+        // hardware_release_lock(lock);
         goto restart;
     }
-    hardware_release_lock(lock);
+    // hardware_release_lock(lock);
+
+    if (LOCK_GET_OWNED_READ(lock_value))
+    {
+        if (LOCK_GET_N_READERS(lock_value) > 1)
+        {
+            stm_rollback(tx);
+            return NULL;
+        }
+    }
 
     w = stm_has_written(tx, addr);
     if (w != NULL)
@@ -172,7 +180,7 @@ stm_wbctl_commit(TYPE stm_tx *tx)
     stm_word_t lock_value;
 
     w = tx->w_set.entries + tx->w_set.nb_entries;
-    
+
     do
     {
         w--;
@@ -191,7 +199,6 @@ stm_wbctl_commit(TYPE stm_tx *tx)
             }
 
             hardware_release_lock(w->lock);
-            // printf("# 1\n");
             stm_rollback(tx);
             return;
         }
