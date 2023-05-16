@@ -172,6 +172,7 @@ stm_wbctl_commit(TYPE stm_tx *tx)
     stm_word_t lock_value;
 
     w = tx->w_set.entries + tx->w_set.nb_entries;
+    
     do
     {
         w--;
@@ -185,10 +186,13 @@ stm_wbctl_commit(TYPE stm_tx *tx)
             if (tx->w_set.entries <= lock_w && 
                 lock_w < tx->w_set.entries + tx->w_set.nb_entries)
             {
+                hardware_release_lock(w->lock);
                 continue;
             }
 
-            stm_wbctl_rollback(tx);
+            hardware_release_lock(w->lock);
+            // printf("# 1\n");
+            stm_rollback(tx);
             return;
         }
 
@@ -204,6 +208,7 @@ stm_wbctl_commit(TYPE stm_tx *tx)
             else
             {
                 hardware_release_lock(w->lock);
+                // printf("# 2\n");
                 stm_rollback(tx);
                 return;
             }

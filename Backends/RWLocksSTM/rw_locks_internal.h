@@ -103,6 +103,34 @@ stm_has_written(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
 
 #include "backoff.h"
 
+void
+drop_read_locks(TYPE stm_tx *tx)
+{
+    TYPE r_entry_t *r;
+    
+    r = tx->r_set.entries;
+    for (uint16_t i = tx->r_set.nb_entries; i > 0; i--, r++)
+    {
+        if (r->dropped)
+        {
+            continue;
+        }
+
+        hardware_acquire_lock(r->lock);
+
+        if (LOCK_GET_N_READERS(*(r->lock)) == 1)
+        {
+            *(r->lock) = 0x00;
+        }
+        else
+        {
+            *(r->lock) = LOCK_DEC_N_READERS((*(r->lock)), tx->tid);
+        }
+
+        hardware_release_lock(r->lock);
+    }
+}
+
 static inline void
 int_stm_start(TYPE stm_tx *tx)
 {
@@ -197,6 +225,12 @@ int_stm_commit(TYPE stm_tx *tx)
     t_process_cycles = perfcounter_get() - tx->time;
     tx->time = perfcounter_config(COUNT_CYCLES, false);
 
+    if (tx->w_set.nb_entries == 0)
+    {
+        drop_read_locks(tx);
+    }
+    else
+    {
 #if defined(WRITE_BACK_CTL)
         stm_wbctl_commit(tx);
 #elif defined(WRITE_BACK_ETL)
@@ -204,6 +238,7 @@ int_stm_commit(TYPE stm_tx *tx)
 #elif defined(WRITE_THROUGH_ETL)
         stm_wtetl_commit(tx);
 #endif
+    }
 
     if (IS_ABORTED(tx->status))
     {
