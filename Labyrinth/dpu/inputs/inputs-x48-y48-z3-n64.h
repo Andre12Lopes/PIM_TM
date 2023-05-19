@@ -82,6 +82,6 @@ __mram int PATHS[NUM_PATHS][6] =
 //     {0, 0, 1, 5, 5, 1},
 // };
 
-// cat file.txt | tr -s ' ' ", #" | cut -d ', ' -f 2-7 | awk '{print "{"$0"},"}'
+// cat file.txt | tr -s ' ' ", #" | cut -d ',' -f 2-7 | awk '{print "{"$0"},"}'
 
 #endif /* _INPUTS_H_ */
