@@ -175,8 +175,6 @@ main()
         }
 
         TM_COMMIT(tx);
-
-        thread_local_num_transactions[tid] += n - 2;
     }
 
     get_metrics(tx, tid, NUM_PATHS);

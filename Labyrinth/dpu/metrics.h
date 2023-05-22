@@ -16,8 +16,6 @@ __host uint32_t nb_wasted_cycles;
 __host uint32_t n_aborts;
 __host uint32_t n_trans;
 
-int thread_local_num_transactions[NR_TASKLETS];
-
 void
 start_count(int tid)
 {
@@ -38,14 +36,7 @@ get_metrics(TYPE Tx *tx, int tid, int num_transactions)
     {
         nb_cycles = perfcounter_get() - initial_time;
 
-	n_trans = 0;
-
-        for (int i = 0; i < NR_TASKLETS; ++i)
-        {
-            n_trans += thread_local_num_transactions[i];
-        }
-
-        n_trans += num_transactions;
+        n_trans = NUN_PATHS * 2;
 
         n_aborts = 0;
         nb_process_cycles = 0;
@@ -77,8 +68,7 @@ get_metrics(TYPE Tx *tx, int tid, int num_transactions)
 
             nb_wasted_cycles +=
                 ((double)(tx->total_cycles - (tx->process_cycles + tx->commit_cycles))
-                /
-                 (n_trans));
+                / (n_trans));
         }
         barrier_wait(&barr);
     }
