@@ -36,7 +36,7 @@ get_metrics(TYPE Tx *tx, int tid, int num_transactions)
     {
         nb_cycles = perfcounter_get() - initial_time;
 
-        n_trans = num_transactions * 2;
+        n_trans = NUN_PATHS * 2;
 
         n_aborts = 0;
         nb_process_cycles = 0;
