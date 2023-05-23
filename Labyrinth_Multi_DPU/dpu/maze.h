@@ -188,30 +188,20 @@ pair_alloc(__mram_ptr void *firstPtr, __mram_ptr void *secondPtr)
 }
 
 void
-maze_read(__mram_ptr maze_t *maze, __mram_ptr grid_t *grid)
+maze_read(__mram_ptr maze_t *maze, __mram_ptr grid_t *grid, __mram_ptr int *paths)
 {
     maze->workQueuePtr = queue_alloc(NUM_PATHS);
     // assert(maze->workQueuePtr);
 
     for (long i = 0; i < NUM_PATHS; ++i)
     {
-        // if (!grid_is_point_valid(grid, PATHS[i][0], PATHS[i][1], PATHS[i][2]) ||
-        //     !grid_is_point_valid(grid, PATHS[i][3], PATHS[i][4], PATHS[i][5]))
-        // {
-            // printf("[Error] Invalid pint\n");
-            // assert(1);
-        // }
-
         __mram_ptr coordinate_t *srcPtr = 
-            coordinate_alloc(PATHS[i][0], PATHS[i][1], PATHS[i][2]);
+            coordinate_alloc(paths[(i * 6)], paths[(i * 6) + 1], paths[(i * 6) + 2]);
         __mram_ptr coordinate_t *dstPtr = 
-            coordinate_alloc(PATHS[i][3], PATHS[i][4], PATHS[i][5]);
-        // assert(srcPtr);
-        // assert(dstPtr);
-
+            coordinate_alloc(paths[(i * 6) + 3], paths[(i * 6) + 4], paths[(i * 6) + 5]);
+     
         __mram_ptr pair_t *coordinatePairPtr = pair_alloc(srcPtr, dstPtr);
-        // assert(coordinatePairPtr);
-
+     
         queue_push(maze->workQueuePtr, (__mram_ptr void *)coordinatePairPtr);
 
         grid_get_point_ref(grid, srcPtr->x, srcPtr->y, srcPtr->z)->value = GRID_POINT_FULL;

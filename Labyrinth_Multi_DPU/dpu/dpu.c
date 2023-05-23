@@ -9,16 +9,19 @@
 
 #include <tm.h>
 
-#include "metrics.h"
-
 BARRIER_INIT(labyrinth_barr, NR_TASKLETS);
-
-#include "inputs/inputs-x32-y32-z3-n96.h"
 
 #define PARAM_BENDCOST 1
 #define PARAM_XCOST 1
 #define PARAM_YCOST 1
 #define PARAM_ZCOST 2
+
+#define NUM_PATHS 100
+#define RANGE_X 32
+#define RANGE_Y 32
+#define RANGE_Z 3
+
+__mram int bach[NUM_PATHS * 6];
 
 #include "types.h"
 #include "vector.h"
@@ -65,12 +68,10 @@ main()
 
     TM_INIT(tx, tid);
 
-    start_count(tid);
-
     if (tid == 0)
     {
         grid_alloc(&grid);
-        maze_read(&maze, &grid);
+        maze_read(&maze, &grid, bach);
         // router_alloc(&router, PARAM_XCOST, PARAM_YCOST, PARAM_ZCOST, PARAM_BENDCOST);
         router.x_cost = PARAM_XCOST;
         router.y_cost = PARAM_YCOST;
@@ -176,8 +177,6 @@ main()
 
         TM_COMMIT(tx);
     }
-
-    get_metrics(tx, tid, NUM_PATHS);
 
     return 0;
 }

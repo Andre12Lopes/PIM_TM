@@ -1,7 +1,7 @@
 #/bin/bash
 
 tm_folders="NoREC RWLocksSTM TinySTM"
-benchmark_folders="Bank Kmeans LinkedList Labyrinth"
+benchmark_folders="Bank Kmeans LinkedList Labyrinth Labyrinth_Multi_DPU"
 
 cd Backends
 for f in $tm_folders; do

@@ -2,7 +2,7 @@
 
 if [[ $# != 4 ]]; then
 	echo "Invalid number of parameters"
-	echo "Usage: ./build.sh [backend {norec|rwlocks_wbctl|rwlocks_wbetl|rwlocks_wtetl|tiny_wbctl|tiny_wbetl|tiny_wtetl}] [benchmark {bank|linkedlist|kmeans|labyrinth}] [contention {e.g. #bank accounts}] [#tasklets {1 .. 24}]"
+	echo "Usage: ./build.sh [backend {norec|rwlocks_wbctl|rwlocks_wbetl|rwlocks_wtetl|tiny_wbctl|tiny_wbetl|tiny_wtetl}] [benchmark {bank|linkedlist|kmeans|labyrinth|labyrinth_md}] [contention/#DPUs] [#tasklets {1 .. 24}]"
 	exit 1
 fi
 
@@ -68,6 +68,9 @@ case $2 in
 	"labyrinth" )
 		benchmark_folder="Labyrinth"
 		;;
+	"labyrinth_md" )
+		benchmark_folder="Labyrinth_Multi_DPU"
+		;;
 	* )
 		echo ""
 		echo "==================== ERROR UNKNOWN BENCHMARK $2 ===================="
@@ -120,9 +123,15 @@ if [[ $benchmark_folder == "Kmeans" ]]; then
 fi
 
 if [[ $benchmark_folder == "Labyrinth" ]]; then
-	# kmeans_flags="N_CLUSTERS=$3"
+	cd $benchmark_folder
+	make $common_flags $benchmark_lib_flags
+	cd ..
+fi
+
+if [[ $benchmark_folder == "Labyrinth_Multi_DPU" ]]; then
+	labyrinth_md_flags="N_DPUS=$3"
 
 	cd $benchmark_folder
-	make $common_flags $benchmark_lib_flags # $kmeans_flags
+	make $common_flags $benchmark_lib_flags $labyrinth_md_flags
 	cd ..
 fi

@@ -50,9 +50,9 @@ ifdef BACKOFF
 	DEFINES += -DBACKOFF
 endif
 
-# ifdef N_CLUSTERS
-# 	DEFINES += -DN_CLUSTERS=$(N_CLUSTERS)
-# endif
+ifdef N_DPUS
+	HOST_FLAGS += -DN_DPUS=$(N_DPUS)
+endif
 
 # =============================================================================
 # Rules
