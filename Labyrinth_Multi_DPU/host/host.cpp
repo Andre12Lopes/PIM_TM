@@ -11,8 +11,8 @@ using namespace dpu;
 #endif
 
 #define NUM_PATHS 100
-#define RANGE_X 32
-#define RANGE_Y 32
+#define RANGE_X 128
+#define RANGE_Y 128
 #define RANGE_Z 3
 
 void 
@@ -47,7 +47,8 @@ main(int argc, char **argv)
         //     }
         //     std::cout << "-------------------" << std::endl;
         // }
-
+	//for (int i = 0; i < 10; ++i)
+	//{
         auto start = std::chrono::steady_clock::now();
     
         system.copy("bach", bach);
@@ -56,8 +57,8 @@ main(int argc, char **argv)
 
         system.exec();
 
-        // std::cout << "-----------------------" << std::endl;
-        // system.log(std::cout);
+        //std::cout << "-----------------------" << std::endl;
+        //system.log(std::cout);
 
         auto end = std::chrono::steady_clock::now();
 
@@ -69,6 +70,7 @@ main(int argc, char **argv)
                   << N_DPUS << "\t"
                   << total_copy_time << "\t"
                   << total_time << std::endl;
+	//}
     }
     catch (const DpuError &e)
     {

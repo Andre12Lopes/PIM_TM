@@ -71,7 +71,7 @@ $(DPU_TARGET): $(DPU_OBJS)
 	$(CC) $(LDFLAGS) -DNR_TASKLETS=$(NR_TASKLETS) $^ $(LIBS) -o $@
 
 $(HOST_TARGET): $(HOST_SRCS)
-	$(CPP) $(HOST_FLAGS) $^ -o $@ `dpu-pkg-config --cflags --libs dpu` -g
+	$(CPP) $(HOST_FLAGS) $^ -o $@ `dpu-pkg-config --cflags --libs dpu`
 
 clean:
 	$(RM) -r $(BUILD_DIR) $(HOST_DIR)/*.o $(DPU_DIR)/*.o

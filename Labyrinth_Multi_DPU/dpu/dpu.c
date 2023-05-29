@@ -17,8 +17,8 @@ BARRIER_INIT(labyrinth_barr, NR_TASKLETS);
 #define PARAM_ZCOST 2
 
 #define NUM_PATHS 100
-#define RANGE_X 32
-#define RANGE_Y 32
+#define RANGE_X 128
+#define RANGE_Y 128
 #define RANGE_Z 3
 
 __mram int bach[NUM_PATHS * 6];
@@ -145,7 +145,7 @@ main()
                 // ================ ADD PATH TO GRID ====================
                 n = vector_get_size(point_vector);
                 
-                for (long i = 1; i < (n - 1); i++)
+		for (long i = 1; i < (n - 1); i++)
                 {
                     __mram_ptr grid_point_t *gridPointPtr = 
                         (__mram_ptr grid_point_t *)vector_at(point_vector, i);
