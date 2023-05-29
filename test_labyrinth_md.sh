@@ -17,8 +17,8 @@ echo -e "N_THREADS_DPU\tNUM_TXS_PER_DPU\tN_DPUS\tCOMM_TIME\tTOTAL_TIME" > Result
 DPUS="1 500 1000 1500 2000 2500"
 
 for d in $DPUS; do
-	bash build.sh $1 labyrinth_md $d 11 > /dev/null
-	for (( j = 0; j < 10; j++ )); do
-		./$folder/bin/host >> Results/$folder/$1/results_mram_$3.txt
+	bash build.sh $1 labyrinth_md $d 10 > /dev/null
+	for (( j = 0; j < 5; j++ )); do
+		./$folder/bin/host >> Results/$folder/$1/results_mram.txt
 	done
 done
