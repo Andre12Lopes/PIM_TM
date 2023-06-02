@@ -17,10 +17,10 @@
 #endif
 
 /* Initial size of read sets */
-#define R_SET_SIZE 120
+#define R_SET_SIZE 300
 
 /* Initial size of write sets */
-#define W_SET_SIZE 120
+#define W_SET_SIZE 300
 
 typedef uintptr_t stm_word_t;
 
@@ -33,8 +33,8 @@ typedef struct r_entry
 typedef struct r_set
 { /* Read set */                   /* Array of entries */
     r_entry_t entries[R_SET_SIZE]; /* Array of entries */
-    uint8_t nb_entries;            /* Number of entries */
-    uint8_t size;                  /* Size of array */
+    uint16_t nb_entries;            /* Number of entries */
+    uint16_t size;                  /* Size of array */
 } r_set_t;
 
 typedef struct w_entry
@@ -51,8 +51,8 @@ typedef struct w_entry
 typedef struct w_set
 {                                  /* Array of entries */
     w_entry_t entries[W_SET_SIZE]; /* Array of entries */
-    uint8_t nb_entries;            /* Number of entries */
-    uint8_t size;                  /* Size of array */
+    uint16_t nb_entries;            /* Number of entries */
+    uint16_t size;                  /* Size of array */
     uint8_t has_writes;
     uint8_t nb_acquired; /* WRITE_BACK_CTL: Number of locks acquired */
 } w_set_t;
