@@ -13,7 +13,7 @@
 
 BARRIER_INIT(labyrinth_barr, NR_TASKLETS);
 
-#include "inputs/inputs-x16-y16-z3-n96.h"
+#include "inputs/inputs-x128-y128-z3-n96.h"
 
 #define PARAM_BENDCOST 1
 #define PARAM_XCOST 1
