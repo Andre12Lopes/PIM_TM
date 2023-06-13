@@ -11,8 +11,8 @@ using namespace dpu;
 #endif
 
 #define NUM_PATHS 100
-#define RANGE_X 16
-#define RANGE_Y 16
+#define RANGE_X 128
+#define RANGE_Y 128
 #define RANGE_Z 3
 
 void 
@@ -38,15 +38,15 @@ main(int argc, char **argv)
 
         create_bach(system, bach);
 
-        for (unsigned i = 0; i < system.dpus().size(); ++i)
-        {
-            for (int j = 0; j < (6 * NUM_PATHS); j += 6)
-            {
-                std::cout << "(" << bach[i][j] << "," << bach[i][j + 1] << "," << bach[i][j + 2] << ") ->";
-                std::cout << " (" << bach[i][j + 3] << "," << bach[i][j + 4] << "," << bach[i][j + 5] << ")" << std::endl;
-            }
-            std::cout << "-------------------" << std::endl;
-        }
+        // for (unsigned i = 0; i < system.dpus().size(); ++i)
+        // {
+        //     for (int j = 0; j < (6 * NUM_PATHS); j += 6)
+        //     {
+        //         std::cout << "(" << bach[i][j] << "," << bach[i][j + 1] << "," << bach[i][j + 2] << ") ->";
+        //         std::cout << " (" << bach[i][j + 3] << "," << bach[i][j + 4] << "," << bach[i][j + 5] << ")" << std::endl;
+        //     }
+        //     std::cout << "-------------------" << std::endl;
+        // }
         
 	auto start = std::chrono::steady_clock::now();
     

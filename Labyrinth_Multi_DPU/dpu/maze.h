@@ -190,6 +190,9 @@ pair_alloc(__mram_ptr void *firstPtr, __mram_ptr void *secondPtr)
 void
 maze_read(__mram_ptr maze_t *maze, __mram_ptr grid_t *grid, __mram_ptr int *paths)
 {
+    __mram_ptr grid_point_t *srcPoint;
+    __mram_ptr grid_point_t *dstPoint;
+
     maze->workQueuePtr = queue_alloc(NUM_PATHS);
     // assert(maze->workQueuePtr);
 
@@ -204,8 +207,13 @@ maze_read(__mram_ptr maze_t *maze, __mram_ptr grid_t *grid, __mram_ptr int *path
      
         queue_push(maze->workQueuePtr, (__mram_ptr void *)coordinatePairPtr);
 
-        grid_get_point_ref(grid, srcPtr->x, srcPtr->y, srcPtr->z)->value = GRID_POINT_FULL;
-        grid_get_point_ref(grid, dstPtr->x, dstPtr->y, dstPtr->z)->value = GRID_POINT_FULL;
+        srcPoint = grid_get_point_ref(grid, srcPtr->x, srcPtr->y, srcPtr->z);
+        dstPoint = grid_get_point_ref(grid, dstPtr->x, dstPtr->y, dstPtr->z);
+	
+	grid_point_t point = { .value = GRID_POINT_FULL, .padding = 0 };
+	
+	*srcPoint = point;
+	*dstPoint = point;
     }
 }
 
