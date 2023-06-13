@@ -17,8 +17,8 @@ BARRIER_INIT(labyrinth_barr, NR_TASKLETS);
 #define PARAM_ZCOST 2
 
 #define NUM_PATHS 100
-#define RANGE_X 32
-#define RANGE_Y 32
+#define RANGE_X 16
+#define RANGE_Y 16
 #define RANGE_Z 3
 
 __mram int bach[NUM_PATHS * 6];
@@ -139,8 +139,8 @@ main()
         if (pdo_expansion(&router, my_grid, myExpansionQueue, src, dest))
         {
             point_vector = pdo_traceback(&grid, my_grid, dest, PARAM_BENDCOST);
-
-            if (point_vector)
+            
+	    if (point_vector)
             {
                 // ================ ADD PATH TO GRID ====================
                 n = vector_get_size(point_vector);
