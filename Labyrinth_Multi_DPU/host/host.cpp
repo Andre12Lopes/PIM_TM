@@ -11,8 +11,8 @@ using namespace dpu;
 #endif
 
 #define NUM_PATHS 100
-#define RANGE_X 32
-#define RANGE_Y 32
+#define RANGE_X 16
+#define RANGE_Y 16
 #define RANGE_Z 3
 
 void 
@@ -38,18 +38,17 @@ main(int argc, char **argv)
 
         create_bach(system, bach);
 
-        // for (unsigned i = 0; i < system.dpus().size(); ++i)
-        // {
-        //     for (int j = 0; j < (6 * NUM_PATHS); j += 6)
-        //     {
-        //         std::cout << "(" << bach[i][j] << "," << bach[i][j + 1] << "," << bach[i][j + 2] << ") ->";
-        //         std::cout << " (" << bach[i][j + 3] << "," << bach[i][j + 4] << "," << bach[i][j + 5] << ")" << std::endl;
-        //     }
-        //     std::cout << "-------------------" << std::endl;
-        // }
-	//for (int i = 0; i < 10; ++i)
-	//{
-        auto start = std::chrono::steady_clock::now();
+        for (unsigned i = 0; i < system.dpus().size(); ++i)
+        {
+            for (int j = 0; j < (6 * NUM_PATHS); j += 6)
+            {
+                std::cout << "(" << bach[i][j] << "," << bach[i][j + 1] << "," << bach[i][j + 2] << ") ->";
+                std::cout << " (" << bach[i][j + 3] << "," << bach[i][j + 4] << "," << bach[i][j + 5] << ")" << std::endl;
+            }
+            std::cout << "-------------------" << std::endl;
+        }
+        
+	auto start = std::chrono::steady_clock::now();
     
         system.copy("bach", bach);
 
@@ -57,8 +56,8 @@ main(int argc, char **argv)
 
         system.exec();
 
-        //std::cout << "-----------------------" << std::endl;
-        //system.log(std::cout);
+        // std::cout << "-----------------------" << std::endl;
+        // system.log(std::cout);
 
         auto end = std::chrono::steady_clock::now();
 
@@ -85,8 +84,8 @@ create_bach(DpuSet &system, std::vector<std::vector<int>> &bach)
 {
     std::random_device dev;
     std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> rand_x_y(0, 31);
-    std::uniform_int_distribution<std::mt19937::result_type> rand_z(0, 2);
+    std::uniform_int_distribution<std::mt19937::result_type> rand_x_y(0, RANGE_X - 1);
+    std::uniform_int_distribution<std::mt19937::result_type> rand_z(0, RANGE_Z - 1);
     int index;
 
     for (unsigned i = 0; i < system.dpus().size(); ++i)
