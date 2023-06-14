@@ -86,8 +86,8 @@ main()
         mram_read(&(maze.paths[i].src), &src, sizeof(coordinate_t));
         mram_read(&(maze.paths[i].dest), &dest, sizeof(coordinate_t));
 
-        printf("Expansion (%ld, %ld, %ld) -> (%ld, %ld, %ld)\n", 
-               src.x, src.y, src.z, dest.x, dest.y, dest.z);
+        // printf("Expansion (%ld, %ld, %ld) -> (%ld, %ld, %ld)\n", 
+        //       src.x, src.y, src.z, dest.x, dest.y, dest.z);
 
         success = FALSE;
         point_vector = NULL;
@@ -137,7 +137,7 @@ main()
         TM_COMMIT(tx);
     }
 
-    // get_metrics(tx, tid, NUM_PATHS);
+    get_metrics(tx, tid, NUM_PATHS);
 
     return 0;
 }
