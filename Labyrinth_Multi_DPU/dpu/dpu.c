@@ -140,12 +140,12 @@ main()
         {
             point_vector = pdo_traceback(&grid, my_grid, dest, PARAM_BENDCOST);
             
-	    if (point_vector)
+            if (point_vector)
             {
                 // ================ ADD PATH TO GRID ====================
                 n = vector_get_size(point_vector);
                 
-		for (long i = 1; i < (n - 1); i++)
+                for (long i = 1; i < (n - 1); i++)
                 {
                     __mram_ptr grid_point_t *gridPointPtr = 
                         (__mram_ptr grid_point_t *)vector_at(point_vector, i);
