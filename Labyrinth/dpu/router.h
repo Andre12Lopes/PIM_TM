@@ -77,8 +77,8 @@ pexpand_neighbor(__mram_ptr grid_t *myGridPtr, long x, long y, long z, int v,
 
 static bool_t
 pdo_expansion(__mram_ptr router_t *routerPtr, __mram_ptr grid_t *myGridPtr,
-              __mram_ptr queue_t *queuePtr, __mram_ptr coordinate_t *srcPtr, 
-              __mram_ptr coordinate_t *dstPtr)
+              __mram_ptr queue_t *queuePtr, coordinate_t *srcPtr, 
+              coordinate_t *dstPtr)
 {
     __mram_ptr grid_point_t *srcGridPointPtr;
     __mram_ptr grid_point_t *dstGridPointPtr;
@@ -162,7 +162,7 @@ traceToNeighbor(__mram_ptr grid_t *myGridPtr, point_t *currPtr, point_t *movePtr
 
 static __mram_ptr vector_t *
 pdo_traceback(__mram_ptr grid_t *gridPtr, __mram_ptr grid_t *myGridPtr,
-              __mram_ptr coordinate_t *dstPtr, long bendCost)
+              coordinate_t *dstPtr, long bendCost)
 {
     __mram_ptr vector_t *pointVectorPtr;
     point_t next;
