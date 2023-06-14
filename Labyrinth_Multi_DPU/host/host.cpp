@@ -11,8 +11,8 @@ using namespace dpu;
 #endif
 
 #define NUM_PATHS 100
-#define RANGE_X 128
-#define RANGE_Y 128
+#define RANGE_X 16
+#define RANGE_Y 16
 #define RANGE_Z 3
 
 void 
@@ -48,7 +48,7 @@ main(int argc, char **argv)
         //     std::cout << "-------------------" << std::endl;
         // }
         
-	auto start = std::chrono::steady_clock::now();
+        auto start = std::chrono::steady_clock::now();
     
         system.copy("bach", bach);
 
