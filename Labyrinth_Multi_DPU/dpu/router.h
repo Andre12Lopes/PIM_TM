@@ -47,10 +47,10 @@ router_alloc(__mram_ptr router_t *r, long x_cost, long y_cost, long z_cost,
 }
 
 static void
-pexpand_neighbor(__mram_ptr grid_t *myGridPtr, long x, long y, long z, int v,
+pexpand_neighbor(grid_t *myGridPtr, long x, long y, long z, int v,
                     __mram_ptr queue_t *queuePtr)
 {
-    __mram_ptr grid_point_t *neighborGridPointPtr;
+    grid_point_t *neighborGridPointPtr;
     int neighborValue;
 
     if (grid_is_point_valid(myGridPtr, x, y, z))
@@ -76,13 +76,13 @@ pexpand_neighbor(__mram_ptr grid_t *myGridPtr, long x, long y, long z, int v,
 }
 
 static bool_t
-pdo_expansion(__mram_ptr router_t *routerPtr, __mram_ptr grid_t *myGridPtr,
+pdo_expansion(__mram_ptr router_t *routerPtr, grid_t *myGridPtr,
               __mram_ptr queue_t *queuePtr, coordinate_t *srcPtr, 
               coordinate_t *dstPtr)
 {
-    __mram_ptr grid_point_t *srcGridPointPtr;
-    __mram_ptr grid_point_t *dstGridPointPtr;
-    __mram_ptr grid_point_t *gridPointPtr;
+    grid_point_t *srcGridPointPtr;
+    grid_point_t *dstGridPointPtr;
+    grid_point_t *gridPointPtr;
     bool_t isPathFound;
     long x, y, z;
     int value;
@@ -100,7 +100,7 @@ pdo_expansion(__mram_ptr router_t *routerPtr, __mram_ptr grid_t *myGridPtr,
 
     while (!queue_is_empty(queuePtr))
     {
-        gridPointPtr = (__mram_ptr grid_point_t *)queue_pop(queuePtr);
+        gridPointPtr = (grid_point_t *)queue_pop(queuePtr);
 
         if (gridPointPtr == dstGridPointPtr)
         {
@@ -128,7 +128,7 @@ pdo_expansion(__mram_ptr router_t *routerPtr, __mram_ptr grid_t *myGridPtr,
 }
 
 static void
-traceToNeighbor(__mram_ptr grid_t *myGridPtr, point_t *currPtr, point_t *movePtr,
+traceToNeighbor(grid_t *myGridPtr, point_t *currPtr, point_t *movePtr,
                 bool_t useMomentum, long bendCost, point_t *nextPtr)
 {
     int value;
@@ -161,7 +161,7 @@ traceToNeighbor(__mram_ptr grid_t *myGridPtr, point_t *currPtr, point_t *movePtr
 }
 
 static __mram_ptr vector_t *
-pdo_traceback(__mram_ptr grid_t *gridPtr, __mram_ptr grid_t *myGridPtr,
+pdo_traceback(grid_t *gridPtr, grid_t *myGridPtr,
               coordinate_t *dstPtr, long bendCost)
 {
     __mram_ptr vector_t *pointVectorPtr;
@@ -181,7 +181,7 @@ pdo_traceback(__mram_ptr grid_t *gridPtr, __mram_ptr grid_t *myGridPtr,
     {
         // printf("(%li, %li, %li)\n", next.x, next.y, next.z);
         
-        __mram_ptr grid_point_t *gridPointPtr =
+        grid_point_t *gridPointPtr =
             grid_get_point_ref(gridPtr, next.x, next.y, next.z);
         vector_push_back(pointVectorPtr, (__mram_ptr void *)gridPointPtr);
         grid_set_point(myGridPtr, next.x, next.y, next.z, GRID_POINT_FULL);

@@ -35,8 +35,8 @@ Tx __mram_noinit tx_mram[NR_TASKLETS];
 
 __mram router_t router;
 __mram maze_t maze;
-__mram grid_t grid;
-__mram grid_t thread_local_grids[NR_TASKLETS];
+grid_t grid;
+grid_t thread_local_grids[NR_TASKLETS];
 
 int
 main()
@@ -46,7 +46,7 @@ main()
     int tid;
 
     __dma_aligned coordinate_t src, dest;
-    __mram_ptr grid_t *my_grid;
+    grid_t *my_grid;
     __mram_ptr queue_t *myExpansionQueue;
     __mram_ptr vector_t *point_vector;
     bool_t success;
@@ -69,7 +69,7 @@ main()
     if (tid == 0)
     {
         grid_alloc(&grid);
-        maze_read(&maze, &grid, bach);
+        maze_read(&maze, bach);
         // router_alloc(&router, PARAM_XCOST, PARAM_YCOST, PARAM_ZCOST, PARAM_BENDCOST);
         router.x_cost = PARAM_XCOST;
         router.y_cost = PARAM_YCOST;
@@ -86,48 +86,6 @@ main()
     {
         mram_read(&(maze.paths[i].src), &src, sizeof(coordinate_t));
         mram_read(&(maze.paths[i].dest), &dest, sizeof(coordinate_t));
-    // while(1)
-    // {
-    //     TM_START(tx);
-
-    //     int pop = (int)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->pop));
-    //     int push = (int)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->push));
-    //     int capacity = (int)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->capacity));
-
-    //     // if (queue_is_empty(maze.workQueuePtr))
-    //     if (((pop + 1) % capacity) == push)
-    //     {
-    //         coordinatePairPtr = NULL;
-    //     }
-    //     else 
-    //     {
-    //         pop = (int)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->pop));
-    //         push = (int)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->push));
-    //         capacity = (int)TM_LOAD(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->capacity));
-            
-    //         int newPop = (pop + 1) % capacity;
-    //         if (newPop == push) 
-    //         {
-    //             coordinatePairPtr = NULL;
-    //         }
-    //         else
-    //         {
-    //             coordinatePairPtr = 
-    //                 (__mram_ptr pair_t *)TM_LOAD(tx, &(maze.workQueuePtr->elements[newPop].ptr));
-
-    //             TM_STORE(tx, (__mram_ptr uintptr_t *)&(maze.workQueuePtr->pop), newPop);
-    //         }
-    //     }
-
-    //     TM_COMMIT(tx);
-
-    //     if (coordinatePairPtr == NULL) 
-    //     {
-    //         break;
-    //     }
-
-        // printf("Expansion (%ld, %ld, %ld) -> (%ld, %ld, %ld)\n", 
-        //        src.x, src.y, src.z, dest.x, dest.y, dest.z);
 
         success = FALSE;
         point_vector = NULL;
