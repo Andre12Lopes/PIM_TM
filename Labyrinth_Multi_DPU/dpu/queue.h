@@ -68,7 +68,7 @@ queue_is_empty(__mram_ptr queue_t *queuePtr)
 }
 
 bool_t
-queue_push(__mram_ptr queue_t *queuePtr, __mram_ptr void *dataPtr)
+queue_push(__mram_ptr queue_t *queuePtr, void *dataPtr)
 {
     int pop = queuePtr->pop;
     int push = queuePtr->push;
@@ -129,7 +129,7 @@ queue_push(__mram_ptr queue_t *queuePtr, __mram_ptr void *dataPtr)
     return TRUE;
 }
 
-__mram_ptr void *
+void *
 queue_pop(__mram_ptr queue_t *queuePtr)
 {
     int pop = queuePtr->pop;
@@ -146,7 +146,7 @@ queue_pop(__mram_ptr queue_t *queuePtr)
     data_item_t data = queuePtr->elements[newPop];
     queuePtr->pop = newPop;
 
-    return (__mram_ptr void *)data.ptr;
+    return (void *)data.ptr;
 }
 
 #endif /* _QUEUE_H_ */

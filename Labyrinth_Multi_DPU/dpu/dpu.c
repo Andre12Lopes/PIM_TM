@@ -22,6 +22,29 @@ BARRIER_INIT(labyrinth_barr, NR_TASKLETS);
 #define RANGE_Z 3
 
 __mram int bach[NUM_PATHS * 6];
+// __mram int bach[NUM_PATHS * 6] = 
+// {
+//     12,13,0,8,15,1,
+//     9,15,1,6,4,1,
+//     4,3,2,8,4,1,
+//     3,2,2,10,15,2,
+//     3,11,1,10,6,2,
+//     15,14,2,8,1,2,
+//     0,2,2,12,0,2,
+//     15,10,0,10,2,0,
+//     7,7,0,14,2,0,
+//     10,15,0,9,9,2,
+//     3,10,2,6,9,1,
+//     2,12,1,7,9,0,
+//     6,5,0,8,15,0,
+//     2,4,0,1,2,2,
+//     12,8,2,7,6,2,
+//     13,8,1,15,11,0,
+//     10,3,1,10,6,0,
+//     0,8,0,7,11,0,
+//     10,13,0,3,4,2,
+//     7,1,2,2,0,0,
+// };
 
 #include "types.h"
 #include "vector.h"
@@ -104,18 +127,18 @@ main()
                 
                 for (long i = 1; i < (n - 1); i++)
                 {
-                    __mram_ptr grid_point_t *gridPointPtr = 
-                        (__mram_ptr grid_point_t *)vector_at(point_vector, i);
+                    grid_point_t *gridPointPtr = 
+                        (grid_point_t *)vector_at(point_vector, i);
 
                     int value = 
-                        (int)TM_LOAD_LOOP(tx, (__mram_ptr uintptr_t *)&(gridPointPtr->value));
+                        (int)TM_LOAD_LOOP(tx, (uintptr_t *)&(gridPointPtr->value));
 
                     if (value != GRID_POINT_EMPTY)
                     {
                         TM_RESTART_LOOP(tx);
                     }
 
-                    TM_STORE_LOOP(tx, (__mram_ptr uintptr_t *)&(gridPointPtr->value), GRID_POINT_FULL);
+                    TM_STORE_LOOP(tx, (uintptr_t *)&(gridPointPtr->value), GRID_POINT_FULL);
                 }
 
                 if (tx->status == 4)

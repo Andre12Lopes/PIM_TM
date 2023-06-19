@@ -35,7 +35,7 @@ vector_alloc(long initCapacity)
 }
 
 bool_t
-vector_push_back(__mram_ptr vector_t *vectorPtr, __mram_ptr void *dataPtr)
+vector_push_back(__mram_ptr vector_t *vectorPtr, void *dataPtr)
 {
     if (vectorPtr->size == vectorPtr->capacity)
     {
@@ -69,7 +69,7 @@ vector_get_size(__mram_ptr vector_t *vectorPtr)
     return vectorPtr->size;
 }
 
-__mram_ptr void *
+void *
 vector_at(__mram_ptr vector_t *vectorPtr, long i)
 {
     if ((i < 0) || (i >= vectorPtr->size)) 
@@ -77,7 +77,7 @@ vector_at(__mram_ptr vector_t *vectorPtr, long i)
         return NULL;
     }
 
-    return (__mram_ptr void *)vectorPtr->elements[i];
+    return (void *)vectorPtr->elements[i];
 }
 
 void

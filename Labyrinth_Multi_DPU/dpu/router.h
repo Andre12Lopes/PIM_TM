@@ -61,7 +61,7 @@ pexpand_neighbor(grid_t *myGridPtr, long x, long y, long z, int v,
         if (neighborValue == GRID_POINT_EMPTY)
         {
             neighborGridPointPtr->value = v;
-            queue_push(queuePtr, (__mram_ptr void *)neighborGridPointPtr);
+            queue_push(queuePtr, (void *)neighborGridPointPtr);
         }
         else if (neighborValue != GRID_POINT_FULL)
         {
@@ -69,7 +69,7 @@ pexpand_neighbor(grid_t *myGridPtr, long x, long y, long z, int v,
             if (v < neighborValue)
             {
                 neighborGridPointPtr->value = v;
-                queue_push(queuePtr, (__mram_ptr void *)neighborGridPointPtr);
+                queue_push(queuePtr, (void *)neighborGridPointPtr);
             }
         }
     }
@@ -90,7 +90,7 @@ pdo_expansion(__mram_ptr router_t *routerPtr, grid_t *myGridPtr,
     queue_clear(queuePtr);
 
     srcGridPointPtr = grid_get_point_ref(myGridPtr, srcPtr->x, srcPtr->y, srcPtr->z);
-    queue_push(queuePtr, (__mram_ptr void *)srcGridPointPtr);
+    queue_push(queuePtr, (void *)srcGridPointPtr);
 
     grid_set_point(myGridPtr, srcPtr->x, srcPtr->y, srcPtr->z, 0);
     grid_set_point(myGridPtr, dstPtr->x, dstPtr->y, dstPtr->z, GRID_POINT_EMPTY);
@@ -183,7 +183,7 @@ pdo_traceback(grid_t *gridPtr, grid_t *myGridPtr,
         
         grid_point_t *gridPointPtr =
             grid_get_point_ref(gridPtr, next.x, next.y, next.z);
-        vector_push_back(pointVectorPtr, (__mram_ptr void *)gridPointPtr);
+        vector_push_back(pointVectorPtr, (void *)gridPointPtr);
         grid_set_point(myGridPtr, next.x, next.y, next.z, GRID_POINT_FULL);
 
         /* Check if we are done */
