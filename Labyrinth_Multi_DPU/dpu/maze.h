@@ -87,9 +87,9 @@ grid_get_point_indices(__mram_ptr grid_t *gridPtr, __mram_ptr grid_point_t *grid
     // (*xPtr) = (index / gridPtr->height) % gridPtr->height;
 
     long index = (gridPointPtr - gridPtr->points);
-    (*zPtr) = index >> 10;
-    (*yPtr) = index & 31;
-    (*xPtr) = (index >> 5) & 31;
+    (*zPtr) = index >> 14;
+    (*yPtr) = index & 127;
+    (*xPtr) = (index >> 7) & 127;
 }
 
 // int

@@ -17,10 +17,9 @@ BARRIER_INIT(labyrinth_barr, NR_TASKLETS);
 #define PARAM_ZCOST 2
 
 #define NUM_PATHS 100
-#define RANGE_X 32
-#define RANGE_Y 32
+#define RANGE_X 128
+#define RANGE_Y 128
 #define RANGE_Z 3
-#define GRID_AREA 1024
 
 __mram int bach[NUM_PATHS * 6];
 
