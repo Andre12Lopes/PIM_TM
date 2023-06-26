@@ -65,8 +65,12 @@ grid_copy(__mram_ptr grid_t *dstGridPtr, __mram_ptr grid_t *srcGridPtr)
 __mram_ptr grid_point_t *
 grid_get_point_ref(__mram_ptr grid_t *gridPtr, long x, long y, long z)
 {
-    return &(gridPtr->points[(z * gridPtr->height * gridPtr->width) +
-                             ((x * gridPtr->width) + y)]);
+    
+
+    // return &(gridPtr->points[(z * gridPtr->height * gridPtr->width) +
+    //                          ((x * gridPtr->width) + y)]);
+    return &(gridPtr->points[(z << 14) +
+                             ((x << 7) + y)]);
 }
 
 void
