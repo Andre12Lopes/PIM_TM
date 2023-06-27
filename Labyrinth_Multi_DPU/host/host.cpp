@@ -15,6 +15,20 @@ using namespace dpu;
 #define RANGE_Y 16
 #define RANGE_Z 3
 
+typedef struct grid_point
+{
+    int value;      // point value
+    int padding;    // 4 byte padding
+} grid_point_t;
+
+typedef struct grid
+{
+    long height;
+    long width;
+    long depth;
+    grid_point_t points[RANGE_X * RANGE_Y * RANGE_Z];
+} grid_t;
+
 void 
 create_bach(DpuSet &system, std::vector<std::vector<int>> &bach);
 
@@ -35,6 +49,8 @@ main(int argc, char **argv)
 
         std::vector<std::vector<int>> bach(system.dpus().size(), 
                                            std::vector<int>(6 * NUM_PATHS));
+        std::vector<std::vector<grid_t>> grids(system.dpus().size(), 
+                                               std::vector<grid_t>(1));
 
         create_bach(system, bach);
 
@@ -48,7 +64,7 @@ main(int argc, char **argv)
         //     std::cout << "-------------------" << std::endl;
         // }
         
-	auto start = std::chrono::steady_clock::now();
+        auto start = std::chrono::steady_clock::now();
     
         system.copy("bach", bach);
 
@@ -56,12 +72,18 @@ main(int argc, char **argv)
 
         system.exec();
 
-        // std::cout << "-----------------------" << std::endl;
-        // system.log(std::cout);
+        auto start_copy_back = std::chrono::steady_clock::now();
+    
+        system.copy(grids, "grid");
 
         auto end = std::chrono::steady_clock::now();
 
+        // std::cout << "-----------------------" << std::endl;
+        // system.log(std::cout);
+
+
         total_copy_time += std::chrono::duration_cast<std::chrono::microseconds>(end_copy - start).count();
+        total_copy_time += std::chrono::duration_cast<std::chrono::microseconds>(end - start_copy_back).count();
         total_time += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
         std::cout << NR_TASKLETS << "\t"
@@ -69,7 +91,6 @@ main(int argc, char **argv)
                   << N_DPUS << "\t"
                   << total_copy_time << "\t"
                   << total_time << std::endl;
-	//}
     }
     catch (const DpuError &e)
     {
