@@ -11,8 +11,8 @@ using namespace dpu;
 #endif
 
 #define NUM_PATHS 100
-#define RANGE_X 128
-#define RANGE_Y 128
+#define RANGE_X 32
+#define RANGE_Y 32
 #define RANGE_Z 3
 
 typedef struct grid_point
