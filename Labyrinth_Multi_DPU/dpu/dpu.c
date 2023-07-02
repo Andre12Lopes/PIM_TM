@@ -21,7 +21,8 @@ BARRIER_INIT(labyrinth_barr, NR_TASKLETS);
 #define RANGE_Y 16
 #define RANGE_Z 3
 
-// __mram int bach[NUM_PATHS * 6];
+__mram int bach[NUM_PATHS * 6];
+/*
 __mram int bach[NUM_PATHS * 6] = 
 {
     12,13,0,8,15,1,
@@ -45,7 +46,7 @@ __mram int bach[NUM_PATHS * 6] =
     10,13,0,3,4,2,
     7,1,2,2,0,0,
 };
-
+*/
 #include "types.h"
 #include "vector.h"
 #include "queue.h"
@@ -156,20 +157,6 @@ main()
         }
 
         TM_COMMIT(tx);
-    }
-
-    uint64_t n_aborts = 0;
-    for (int i = 0; i < NR_TASKLETS; ++i)
-    {
-        if (tid == i)
-        {
-            n_aborts += tx->aborts;
-        }
-    }
-
-    if (tid == 0)
-    {
-        printf("> %f\n", ((double)n_aborts * 100) / (n_aborts + NUM_PATHS));
     }
 
     return 0;
