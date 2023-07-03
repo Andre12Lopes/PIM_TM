@@ -93,7 +93,7 @@ main()
     if (tid == 0)
     {
         grid_alloc(&grid);
-        maze_read(&maze, bach);
+        maze_read(&maze, &grid, bach);
         // router_alloc(&router, PARAM_XCOST, PARAM_YCOST, PARAM_ZCOST, PARAM_BENDCOST);
         router.x_cost = PARAM_XCOST;
         router.y_cost = PARAM_YCOST;
