@@ -57,7 +57,7 @@ main(int argc, char **argv)
         system.exec();
 
         // std::cout << "-----------------------" << std::endl;
-        // system.log(std::cout);
+        system.log(std::cout);
 
         auto end = std::chrono::steady_clock::now();
 
