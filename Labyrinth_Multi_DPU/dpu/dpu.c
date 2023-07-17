@@ -69,7 +69,7 @@ main()
     if (tid == 0)
     {
         grid_alloc(&grid);
-        maze_read(&maze, bach);
+        maze_read(&maze, &grid, bach);
         // router_alloc(&router, PARAM_XCOST, PARAM_YCOST, PARAM_ZCOST, PARAM_BENDCOST);
         router.x_cost = PARAM_XCOST;
         router.y_cost = PARAM_YCOST;
@@ -134,20 +134,6 @@ main()
 
         TM_COMMIT(tx);
     }
-
-    // uint64_t n_aborts = 0;
-    // for (int i = 0; i < NR_TASKLETS; ++i)
-    // {
-    //     if (tid == i)
-    //     {
-    //         n_aborts += tx->aborts;
-    //     }
-    // }
-
-    // if (tid == 0)
-    // {
-    //     printf("> %f\n", ((double)n_aborts * 100) / (n_aborts + NUM_PATHS));
-    // }
-
+    
     return 0;
 }

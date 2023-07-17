@@ -129,22 +129,22 @@ grid_is_point_valid(grid_t *gridPtr, long x, long y, long z)
     return TRUE;
 }
 
-// void
-// grid_print(__mram_ptr grid_t *gridPtr)
-// {
-//     for (int z = 0; z < gridPtr->depth; ++z)
-//     {
-//         printf("[z = %d]\n", z);
-//         for (int x = 0; x < gridPtr->width; ++x)
-//         {
-//             for (int y = 0; y < gridPtr->height; ++y)
-//             {
-//                 printf("%4d", grid_get_point_ref(gridPtr, x, y, z)->value);
-//             }
-//             puts("");
-//         }
-//     }
-// }
+void
+grid_print(grid_t *gridPtr)
+{
+    for (int z = 0; z < gridPtr->depth; ++z)
+    {
+        printf("[z = %d]\n", z);
+        for (int x = 0; x < gridPtr->width; ++x)
+        {
+            for (int y = 0; y < gridPtr->height; ++y)
+            {
+                printf("%4d", grid_get_point_ref(gridPtr, x, y, z)->value);
+            }
+            puts("");
+        }
+    }
+}
 
 // void
 // grid_print_addr(__mram_ptr grid_t *gridPtr)
@@ -227,8 +227,11 @@ pair_alloc(__mram_ptr void *firstPtr, __mram_ptr void *secondPtr)
 // }
 
 void
-maze_read(__mram_ptr maze_t *maze, __mram_ptr int *paths)
+maze_read(__mram_ptr maze_t *maze, grid_t *grid, __mram_ptr int *paths)
 {
+    grid_point_t *srcPoint;
+    grid_point_t *dstPoint;
+    
     for (long i = 0; i < NUM_PATHS; ++i)
     {
         maze->paths[i].src.x = paths[(i * 6)];
@@ -238,6 +241,14 @@ maze_read(__mram_ptr maze_t *maze, __mram_ptr int *paths)
         maze->paths[i].dest.x = paths[(i * 6) + 3];
         maze->paths[i].dest.y = paths[(i * 6) + 4];
         maze->paths[i].dest.z = paths[(i * 6) + 5];
+
+	srcPoint = grid_get_point_ref(grid, maze->paths[i].src.x, maze->paths[i].src.y, maze->paths[i].src.z);
+	dstPoint = grid_get_point_ref(grid, maze->paths[i].dest.x, maze->paths[i].dest.y, maze->paths[i].dest.z);
+
+	grid_point_t point = { .value = GRID_POINT_FULL, .padding = 0 };
+
+	*srcPoint = point;
+	*dstPoint = point;
     }
 }
 
