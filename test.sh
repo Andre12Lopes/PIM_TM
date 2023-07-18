@@ -20,7 +20,7 @@ echo -e "N_THREADS\tN_TRANSACTIONS\tTIME\tN_ABORTS\tPROCESS_READ_TIME\tPROCESS_W
 
 for (( i = 1; i < 13; i++ )); do
 	bash build.sh $1 $2 $3 $i > /dev/null
-	for (( j = 0; j < 3; j++ )); do
+	for (( j = 0; j < 10; j++ )); do
 		RES=$(/usr/bin/time -f '%e' ./$folder/bin/host 2>&1)
 		echo "$RES" | head -n 1 | tr -d '\n' >> Results/$folder/$1/results_mram_$3.txt
 		echo -ne "\t" >> Results/$folder/$1/results_mram_$3.txt
