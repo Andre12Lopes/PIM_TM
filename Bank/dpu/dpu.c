@@ -74,21 +74,6 @@ main()
         rc = RAND_R_FNC(s) % N_ACCOUNTS;
         rd = RAND_R_FNC(s) % N_ACCOUNTS;
         
-        // if (tid == 0)
-        // {
-        //     ra = 3;
-        //     rb = 3;
-        //     rc = 4;
-        //     rd = 3;
-        // }
-        // else
-        // {
-        //     ra = 7;
-        //     rb = 9;
-        //     rc = 8;
-        //     rd = 3;
-        // }
-
         TM_START(tx);
 
         a = TM_LOAD(tx, &bank[ra].balance);
