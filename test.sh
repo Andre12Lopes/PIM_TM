@@ -25,6 +25,5 @@ for (( i = 1; i < 13; i++ )); do
 		echo "$RES" | head -n 1 | tr -d '\n' >> Results/$folder/$1/results_mram_$3.txt
 		echo -ne "\t" >> Results/$folder/$1/results_mram_$3.txt
 		echo "$RES" | tail -1 >> Results/$folder/$1/results_mram_$3.txt
-		#./$folder/bin/host >> Results/$folder/$1/results_mram_$3.txt
 	done
 done
