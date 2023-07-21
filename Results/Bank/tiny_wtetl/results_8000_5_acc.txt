@@ -1,0 +1,121 @@
+N_THREADS	N_TRANSACTIONS	TIME	N_ABORTS	PROCESS_READ_TIME	PROCESS_WRITE_TIME	PROCESS_VALIDATION_TIME	PROCESS_OTHER_TIME	COMMIT_VALIDATION_TIME	COMMIT_OTHER_TIME	WASTED_TIME
+1	1000	0.672886	0	3.21e-05	4.35229e-05	0	0.000587886	3.42857e-07	5.94571e-06	1.16286e-06	0.78
+1	1000	0.672811	0	3.20914e-05	4.35314e-05	0	0.000587811	3.45714e-07	5.94286e-06	1.16286e-06	0.76
+1	1000	0.672851	0	3.20943e-05	4.35229e-05	0	0.000587857	3.42857e-07	5.94571e-06	1.16286e-06	0.76
+1	1000	0.672811	0	3.20943e-05	4.342e-05	0	0.000587917	3.42857e-07	5.94571e-06	1.16286e-06	0.76
+1	1000	0.672921	0	3.21114e-05	4.34686e-05	0	0.000587963	3.42857e-07	5.94571e-06	1.16286e-06	0.75
+1	1000	0.672842	0	3.20943e-05	4.356e-05	0	0.000587811	3.45714e-07	5.94286e-06	1.16286e-06	0.76
+1	1000	0.672886	0	3.21e-05	4.35229e-05	0	0.000587886	3.45714e-07	5.94286e-06	1.16286e-06	0.76
+1	1000	0.672842	0	3.20943e-05	4.352e-05	0	0.000587849	3.45714e-07	5.94286e-06	1.16286e-06	0.76
+1	1000	0.672926	0	3.21057e-05	4.34943e-05	0	0.000587946	3.45714e-07	5.94571e-06	1.16571e-06	0.76
+1	1000	0.67292	0	3.20886e-05	4.34914e-05	0	0.00058796	3.45714e-07	5.94571e-06	1.16286e-06	0.76
+api:W:2023-07-21|18:26:41: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.27
+api:W:2023-07-21|18:26:42: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.15
+api:W:2023-07-21|18:26:42: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.25
+api:W:2023-07-21|18:26:42: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.25
+api:W:2023-07-21|18:26:42: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.25
+api:W:2023-07-21|18:26:43: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.25
+api:W:2023-07-21|18:26:43: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.53
+api:W:2023-07-21|18:26:43: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.24
+api:W:2023-07-21|18:26:44: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.25
+api:W:2023-07-21|18:26:44: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.25
+api:W:2023-07-21|18:26:48: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	1.49
+3	3000	0.69628	2.15264	3.21143e-05	4.35371e-05	1.08571e-07	0.000587946	7.65714e-06	5.94571e-06	8.26e-06	1.48
+api:W:2023-07-21|18:26:50: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.82
+api:W:2023-07-21|18:26:51: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.80
+3	3000	0.696014	2.81827	3.21057e-05	4.354e-05	1.14286e-07	0.00058794	7.67714e-06	5.94286e-06	8.28571e-06	1.46
+3	3000	0.695509	2.12072	3.21171e-05	4.35457e-05	1.31429e-07	0.000587923	7.66857e-06	5.94286e-06	8.15429e-06	1.48
+3	3000	0.695471	2.08877	3.21143e-05	4.354e-05	1.31429e-07	0.000587923	7.66571e-06	5.94286e-06	8.12571e-06	1.47
+3	3000	0.696176	2.28013	3.21086e-05	4.34429e-05	1.28571e-07	0.000587906	7.65143e-06	5.94286e-06	8.92e-06	1.48
+api:W:2023-07-21|18:26:58: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.73
+3	3000	0.696027	2.78678	3.21086e-05	4.35371e-05	1.14286e-07	0.00058794	7.68571e-06	5.94571e-06	8.28286e-06	1.46
+api:W:2023-07-21|18:27:01: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.11
+api:W:2023-07-21|18:27:02: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:02: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:02: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:02: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:02: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:02: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:02: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:02: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:03: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:05: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.11
+api:W:2023-07-21|18:27:05: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:05: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:05: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:05: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:05: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:06: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:06: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:06: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:06: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:08: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.12
+api:W:2023-07-21|18:27:08: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:09: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.12
+api:W:2023-07-21|18:27:09: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.16
+api:W:2023-07-21|18:27:09: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.13
+api:W:2023-07-21|18:27:09: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.55
+api:W:2023-07-21|18:27:10: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.19
+api:W:2023-07-21|18:27:10: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:10: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:10: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:12: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.12
+api:W:2023-07-21|18:27:13: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:13: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:13: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:13: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:13: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:13: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:13: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:13: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:14: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:16: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.14
+api:W:2023-07-21|18:27:16: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:17: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:17: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:17: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:17: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:17: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:17: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:17: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.11
+api:W:2023-07-21|18:27:17: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.09
+api:W:2023-07-21|18:27:20: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.19
+api:W:2023-07-21|18:27:20: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.21
+api:W:2023-07-21|18:27:20: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.12
+api:W:2023-07-21|18:27:21: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.14
+api:W:2023-07-21|18:27:21: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.11
+api:W:2023-07-21|18:27:21: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.16
+api:W:2023-07-21|18:27:21: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.12
+api:W:2023-07-21|18:27:21: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.14
+api:W:2023-07-21|18:27:21: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:21: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:24: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:24: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.11
+api:W:2023-07-21|18:27:24: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:24: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:24: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:24: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:25: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:25: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:25: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.12
+api:W:2023-07-21|18:27:25: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:27: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.12
+api:W:2023-07-21|18:27:28: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.12
+api:W:2023-07-21|18:27:28: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:28: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:28: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:28: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:28: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.13
+api:W:2023-07-21|18:27:28: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:28: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:29: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:31: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.16
+api:W:2023-07-21|18:27:31: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:31: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.09
+api:W:2023-07-21|18:27:32: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.15
+api:W:2023-07-21|18:27:32: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.09
+api:W:2023-07-21|18:27:32: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.15
+api:W:2023-07-21|18:27:32: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:32: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:32: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
+api:W:2023-07-21|18:27:32: One or more DPUs are in fault, attach to them by running: 'dpu-lldb-attach-dpu x.x.x <program_path>'	0.10
