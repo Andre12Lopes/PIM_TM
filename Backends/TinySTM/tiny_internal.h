@@ -9,7 +9,7 @@
 #include "atomic.h"
 #include "utils.h"
 
-#define LOCK_ARRAY_LOG_SIZE 10
+#define LOCK_ARRAY_LOG_SIZE 20
 
 #define OWNED_BITS 1       /* 1 bit */
 #define INCARNATION_BITS 3 /* 3 bits */
@@ -37,9 +37,9 @@
 #define LOCK_SHIFT_EXTRA 0
 #define LOCK_SHIFT ((sizeof(stm_word_t) == 4 ? 2 : 3) + LOCK_SHIFT_EXTRA)
 #define LOCK_IDX(a) (((stm_word_t)(a) >> LOCK_SHIFT) & LOCK_MASK)
-#define GET_LOCK(a) (_tinystm.locks + LOCK_IDX(a))
+#define GET_LOCK(a) (&(_tinystm.locks[LOCK_IDX(a)].lock))
 
-#define CLOCK (_tinystm.gclock)
+#define CLOCK (gclock)
 #define GET_CLOCK (ATOMIC_GET_CLOCK_VALUE(&CLOCK))
 #define FETCH_INC_CLOCK (ATOMIC_FETCH_INC_FULL(&CLOCK, 1))
 
@@ -56,14 +56,19 @@ enum
 #define IS_ACTIVE(s) ((GET_STATUS(s) & 0x01) == TX_ACTIVE)
 #define IS_ABORTED(s) ((GET_STATUS(s) & 0x04) == TX_ABORTED)
 
+typedef struct 
+{
+    stm_word_t lock;
+    uint32_t padding;  
+} lock_entry_t;
+
 typedef struct
 {
-    volatile stm_word_t locks[LOCK_ARRAY_SIZE];
-    volatile stm_word_t gclock;
-    unsigned int initialized;
+    volatile lock_entry_t locks[LOCK_ARRAY_SIZE];
 } global_t;
 
-extern global_t _tinystm;
+global_t TYPE_LT_DEF _tinystm;
+volatile stm_word_t gclock;
 
 static void
 stm_rollback(TYPE stm_tx_t *tx, unsigned int reason);
@@ -72,7 +77,7 @@ stm_rollback(TYPE stm_tx_t *tx, unsigned int reason);
  * Check if stripe has been read previously.
  */
 static inline TYPE r_entry_t *
-stm_has_read(TYPE stm_tx_t *tx, volatile stm_word_t *lock)
+stm_has_read(TYPE stm_tx_t *tx, volatile TYPE_LT stm_word_t *lock)
 {
     TYPE r_entry_t *r;
 

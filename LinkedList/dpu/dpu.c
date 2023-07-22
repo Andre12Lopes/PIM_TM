@@ -25,6 +25,8 @@ __mram_ptr intset_t *set;
 
 #ifdef TX_IN_MRAM
 Tx __mram_noinit tx_mram[NR_TASKLETS];
+#else
+Tx tx_wram[NR_TASKLETS];
 #endif
 
 void
@@ -44,8 +46,7 @@ main()
     tid = me();
 
 #ifndef TX_IN_MRAM
-    Tx tx_wram;
-    tx = &tx_wram;
+    tx = &tx_wram[tid];
 #else
     tx = &tx_mram[tid];
 #endif

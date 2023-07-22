@@ -13,7 +13,7 @@ BARRIER_INIT(my_barrier, NR_TASKLETS);
 
 #define TRANSFER 2
 #define ACCOUNT_V 1000
-#define N_TRANSACTIONS 1000
+#define N_TRANSACTIONS 10000
 
 #ifndef N_ACCOUNTS
 #define N_ACCOUNTS 1000
@@ -35,6 +35,8 @@ account_t bank[N_ACCOUNTS];
 
 #ifdef TX_IN_MRAM
 Tx __mram_noinit tx_mram[NR_TASKLETS];
+#else
+Tx tx_wram[NR_TASKLETS];
 #endif
 
 void
@@ -47,16 +49,15 @@ main()
 {
     TYPE Tx *tx;
     int tid;
-    uint32_t ra, rb, rc, rd;
-    uint32_t a, b, c, d;
+    uint32_t ra, rb;
+    uint32_t a, b;
     uint64_t s;
 
     s = (uint64_t)me();
     tid = me();
 
 #ifndef TX_IN_MRAM
-    Tx tx_wram;
-    tx = &tx_wram;
+    tx = &tx_wram[tid];
 #else
     tx = &tx_mram[tid];
 #endif
@@ -69,44 +70,29 @@ main()
 
     for (int i = 0; i < N_TRANSACTIONS; ++i)
     {
-        ra = RAND_R_FNC(s) % N_ACCOUNTS;
-        rb = RAND_R_FNC(s) % N_ACCOUNTS;
-        rc = RAND_R_FNC(s) % N_ACCOUNTS;
-        rd = RAND_R_FNC(s) % N_ACCOUNTS;
-        
-        // if (tid == 0)
-        // {
-        //     ra = 3;
-        //     rb = 3;
-        //     rc = 4;
-        //     rd = 3;
-        // }
-        // else
-        // {
-        //     ra = 7;
-        //     rb = 9;
-        //     rc = 8;
-        //     rd = 3;
-        // }
-
         TM_START(tx);
 
-        a = TM_LOAD(tx, &bank[ra].balance);
-        a -= TRANSFER;
-        TM_STORE(tx, &bank[ra].balance, a);
+        for (int j = 0; j < 2; ++j)
+        {
+            ra = RAND_R_FNC(s) % N_ACCOUNTS;
+            rb = RAND_R_FNC(s) % N_ACCOUNTS;
 
-        b = TM_LOAD(tx, &bank[rb].balance);
-        b += TRANSFER;
-        TM_STORE(tx, &bank[rb].balance, b);
+            a = TM_LOAD_LOOP(tx, &bank[ra].balance);
+            a -= TRANSFER;
+            TM_STORE_LOOP(tx, &bank[ra].balance, a);
 
-        c = TM_LOAD(tx, &bank[rc].balance);
-        c -= TRANSFER;
-        TM_STORE(tx, &bank[rc].balance, c);
+            b = TM_LOAD_LOOP(tx, &bank[rb].balance);
+            b += TRANSFER;
+            TM_STORE_LOOP(tx, &bank[rb].balance, b);
 
-        d = TM_LOAD(tx, &bank[rd].balance);
-        d += TRANSFER;
-        TM_STORE(tx, &bank[rd].balance, d);
+        }
 
+        if (tx->status == 4)
+        {
+            // We break out of previous loop because of an abort
+            continue;
+        }
+        
         TM_COMMIT(tx);
     }
 

@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 static inline void
-stm_wtetl_add_to_rs(TYPE stm_tx_t *tx, stm_word_t version, volatile stm_word_t *lock)
+stm_wtetl_add_to_rs(TYPE stm_tx_t *tx, stm_word_t version, volatile TYPE_LT stm_word_t *lock)
 {
     TYPE r_entry_t *r;
 
@@ -38,7 +38,7 @@ stm_wtetl_validate(TYPE stm_tx_t *tx)
     for (i = tx->r_set.nb_entries; i > 0; i--, r++)
     {
         /* Read lock */
-        l = ATOMIC_LOAD(r->lock);
+        l = ATOMIC_LOAD_LOCK(r->lock);
 
         if (LOCK_GET_WRITE(l))
         {
@@ -147,7 +147,7 @@ stm_wtetl_rollback(TYPE stm_tx_t *tx)
 static inline stm_word_t
 stm_wtetl_read(TYPE stm_tx_t *tx, volatile TYPE_ACC stm_word_t *addr)
 {
-    volatile stm_word_t *lock_addr;
+    volatile TYPE_LT stm_word_t *lock_addr;
     stm_word_t l1;
     stm_word_t l2;
     stm_word_t value, version;
@@ -155,14 +155,14 @@ stm_wtetl_read(TYPE stm_tx_t *tx, volatile TYPE_ACC stm_word_t *addr)
 
     // Read lock
     lock_addr = GET_LOCK(addr);
-    l1 = ATOMIC_LOAD_ACQ(lock_addr);
+    l1 = ATOMIC_LOAD_LOCK(lock_addr);
 
 restart_no_load:
     if (!LOCK_GET_WRITE(l1))
     {
         /* Address not locked */
         value = ATOMIC_LOAD_VALUE_MRAM(addr);
-        l2 = ATOMIC_LOAD_ACQ(lock_addr);
+        l2 = ATOMIC_LOAD_LOCK(lock_addr);
 
         if (l1 != l2)
         {
@@ -217,7 +217,7 @@ static inline TYPE w_entry_t *
 stm_wtetl_write(TYPE stm_tx_t *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_t value,
                 stm_word_t mask)
 {
-    volatile stm_word_t *lock;
+    volatile TYPE_LT stm_word_t *lock;
     stm_word_t l, l1, version;
     TYPE w_entry_t *w;
     TYPE w_entry_t *prev = NULL;
@@ -229,7 +229,7 @@ stm_wtetl_write(TYPE stm_tx_t *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_
 
     /* Try to acquire lock */
 restart:
-    l = ATOMIC_LOAD_ACQ(lock);
+    l = ATOMIC_LOAD_LOCK(lock);
 
     if (LOCK_GET_OWNED(l))
     {
@@ -322,7 +322,7 @@ restart:
 
     acquire(lock);
 
-    l1 = ATOMIC_LOAD_ACQ(lock);
+    l1 = ATOMIC_LOAD_LOCK(lock);
 
     if (l != l1)
     {
@@ -330,7 +330,7 @@ restart:
         goto restart;
     }
 
-    ATOMIC_STORE(lock, LOCK_SET_ADDR_WRITE((stm_word_t)w));
+    ATOMIC_STORE_LOCK(lock, LOCK_SET_ADDR_WRITE((stm_word_t)w));
 
     release(lock);
 
@@ -407,7 +407,7 @@ stm_wtetl_commit(TYPE stm_tx_t *tx)
         {
 
             /* No need for CAS (can only be modified by owner transaction) */
-            ATOMIC_STORE(w->lock, LOCK_SET_TIMESTAMP(t));
+            ATOMIC_STORE_LOCK(w->lock, LOCK_SET_TIMESTAMP(t));
         }
     }
 

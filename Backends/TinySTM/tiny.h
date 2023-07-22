@@ -10,6 +10,14 @@
 #define TYPE
 #endif
 
+#ifdef LT_IN_MRAM
+#define TYPE_LT __mram_ptr
+#define TYPE_LT_DEF __mram
+#else
+#define TYPE_LT
+#define TYPE_LT_DEF
+#endif
+
 #ifdef DATA_IN_MRAM
 #define TYPE_ACC __mram_ptr
 #else
@@ -27,7 +35,7 @@ typedef uintptr_t stm_word_t;
 typedef struct r_entry
 {                              /* Read set entry */
     stm_word_t version;        /* Version read */
-    volatile stm_word_t *lock; /* Pointer to lock (for fast access) */
+    volatile TYPE_LT stm_word_t *lock; /* Pointer to lock (for fast access) */
 } r_entry_t;
 
 typedef struct r_set
@@ -43,7 +51,7 @@ typedef struct w_entry
     stm_word_t value;                   /* New/old value */
     stm_word_t mask;                    /* Write mask */
     stm_word_t version;                 /* Version overwritten */
-    volatile stm_word_t *lock;          /* Pointer to lock (for fast access) */
+    volatile TYPE_LT stm_word_t *lock;          /* Pointer to lock (for fast access) */
     TYPE struct w_entry *next;          /* Next address covered by same lock (if any) */
     uint8_t no_drop;                    /* Should we drop lock upon abort? */
 } w_entry_t __attribute__((aligned(16)));

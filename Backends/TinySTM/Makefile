@@ -5,7 +5,7 @@
 CC 		= dpu-upmem-dpurte-clang
 LD 		= dpu-upmem-dpurte-clang
 
-CFLAGS 	= -Wall -Wextra -Wno-unused-label -Wno-unused-function -Os
+CFLAGS 	= -Wall -Wextra -Wno-unused-label -Wno-unused-function -O3
 
 TM 		= tiny
 TMLIB 	= lib$(TM).a
@@ -21,6 +21,10 @@ RM		= rm -f
 
 ifdef TX_IN_MRAM
 	DEFINES += -DTX_IN_MRAM
+endif
+
+ifdef LT_IN_MRAM
+	DEFINES += -DLT_IN_MRAM
 endif
 
 ifdef DATA_IN_MRAM

@@ -40,6 +40,8 @@ __dma_aligned float cluster_centres[N_CLUSTERS * NUM_ATTRIBUTES];
 
 #ifdef TX_IN_MRAM
 Tx __mram_noinit tx_mram[NR_TASKLETS];
+#else
+Tx tx_wram[NR_TASKLETS];
 #endif
 
 float
@@ -63,8 +65,7 @@ main()
     s = (uint64_t)me();
 
 #ifndef TX_IN_MRAM
-    Tx tx_wram;
-    tx = &tx_wram;
+    tx = &tx_wram[tid];
 #else
     tx = &tx_mram[tid];
 #endif

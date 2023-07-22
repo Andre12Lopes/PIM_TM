@@ -13,7 +13,7 @@ stm_wbctl_validate(TYPE stm_tx_t *tx)
     for (i = tx->r_set.nb_entries; i > 0; i--, r++)
     {
         /* Read lock */
-        l = ATOMIC_LOAD(r->lock);
+        l = ATOMIC_LOAD_LOCK(r->lock);
         /* Unlocked and still the same version? */
         if (LOCK_GET_OWNED(l))
         {
@@ -97,7 +97,7 @@ stm_wbctl_rollback(TYPE stm_tx_t *tx)
                 }
                 else
                 {
-                    ATOMIC_STORE(w->lock, LOCK_SET_TIMESTAMP(w->version));
+                    ATOMIC_STORE_LOCK(w->lock, LOCK_SET_TIMESTAMP(w->version));
                 }
             }
         } while (tx->w_set.nb_acquired > 0);
@@ -107,7 +107,7 @@ stm_wbctl_rollback(TYPE stm_tx_t *tx)
 static stm_word_t
 stm_wbctl_read(TYPE stm_tx_t *tx, volatile TYPE_ACC stm_word_t *addr)
 {
-    volatile stm_word_t *lock;
+    volatile TYPE_LT stm_word_t *lock;
     stm_word_t l, l2, value, version;
     TYPE r_entry_t *r;
     TYPE w_entry_t *written = NULL;
@@ -132,7 +132,7 @@ stm_wbctl_read(TYPE stm_tx_t *tx, volatile TYPE_ACC stm_word_t *addr)
 
     /* Read lock, value, lock */
 restart:
-    l = ATOMIC_LOAD_ACQ(lock);
+    l = ATOMIC_LOAD_LOCK(lock);
 restart_no_load:
     if (LOCK_GET_WRITE(l))
     {
@@ -145,7 +145,7 @@ restart_no_load:
     {
         /* Not locked */
         value = ATOMIC_LOAD_VALUE_MRAM(addr);
-        l2 = ATOMIC_LOAD_ACQ(lock);
+        l2 = ATOMIC_LOAD_LOCK(lock);
         if (l != l2)
         {
             l = l2;
@@ -167,7 +167,7 @@ restart_no_load:
             /* Verify that version has not been overwritten (read value has not
              * yet been added to read set and may have not been checked during
              * extend) */
-            l = ATOMIC_LOAD_ACQ(lock);
+            l = ATOMIC_LOAD_LOCK(lock);
             if (l != l2)
             {
                 l = l2;
@@ -205,7 +205,7 @@ static TYPE w_entry_t *
 stm_wbctl_write(TYPE stm_tx_t *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_t value,
                 stm_word_t mask)
 {
-    volatile stm_word_t *lock;
+    volatile TYPE_LT stm_word_t *lock;
     stm_word_t l, version;
     TYPE w_entry_t *w;
 
@@ -214,7 +214,7 @@ stm_wbctl_write(TYPE stm_tx_t *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_
 
     /* Try to acquire lock */
 restart:
-    l = ATOMIC_LOAD_ACQ(lock);
+    l = ATOMIC_LOAD_LOCK(lock);
 restart_no_load:
     if (LOCK_GET_OWNED(l))
     {
@@ -290,7 +290,7 @@ stm_wbctl_commit(TYPE stm_tx_t *tx)
         w--;
         /* Try to acquire lock */
     restart:
-        l = ATOMIC_LOAD_ACQ(w->lock);
+        l = ATOMIC_LOAD_LOCK(w->lock);
         if (LOCK_GET_OWNED(l))
         {
             /* Do we already own the lock? */
@@ -308,7 +308,7 @@ stm_wbctl_commit(TYPE stm_tx_t *tx)
 
         acquire(w->lock);
 
-        l1 = ATOMIC_LOAD_ACQ(w->lock);
+        l1 = ATOMIC_LOAD_LOCK(w->lock);
 
         if (l != l1)
         {
@@ -316,7 +316,7 @@ stm_wbctl_commit(TYPE stm_tx_t *tx)
             goto restart;
         }
 
-        ATOMIC_STORE(w->lock, LOCK_SET_ADDR_WRITE((stm_word_t)w));
+        ATOMIC_STORE_LOCK(w->lock, LOCK_SET_ADDR_WRITE((stm_word_t)w));
 
         release(w->lock);
 

@@ -6,7 +6,8 @@
 #include "tiny.h"
 #include "tiny_internal.h"
 
-global_t _tinystm;
+// global_t TYPE_LT_DEF _tinystm;
+// volatile stm_word_t gclock;
 
 void
 stm_init(TYPE struct stm_tx *tx, int tid)
@@ -30,6 +31,8 @@ stm_init(TYPE struct stm_tx *tx, int tid)
     tx->aborts = 0;
     tx->retries = 0;
     tx->abort_cycles = 0;
+
+    memset(&_tinystm, 0, sizeof(_tinystm.locks));
 }
 
 void

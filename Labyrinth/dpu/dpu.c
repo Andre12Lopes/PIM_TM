@@ -28,6 +28,8 @@ BARRIER_INIT(labyrinth_barr, NR_TASKLETS);
 
 #ifdef TX_IN_MRAM
 Tx __mram_noinit tx_mram[NR_TASKLETS];
+#else
+Tx tx_wram[NR_TASKLETS];
 #endif
 
 __mram router_t router;
@@ -57,8 +59,7 @@ main()
     my_grid = &thread_local_grids[tid];
 
 #ifndef TX_IN_MRAM
-    Tx tx_wram;
-    tx = &tx_wram;
+    tx = &tx_wram[tid];
 #else
     tx = &tx_mram[tid];
 #endif
