@@ -39,6 +39,8 @@ Tx __mram_noinit tx_mram[NR_TASKLETS];
 Tx tx_wram[NR_TASKLETS];
 #endif
 
+uint32_t __mram_noinit arr[2500];
+
 void
 initialize_accounts();
 void
@@ -72,6 +74,16 @@ main()
     {
         TM_START(tx);
 
+        for (int j = 0; j < 0; ++j)
+        {
+            TM_LOAD_LOOP(tx, &arr[(tid * 100) + i]);
+        }
+
+        if (tx->status == 4)
+        {
+            continue;
+        }
+
         for (int j = 0; j < 2; ++j)
         {
             ra = RAND_R_FNC(s) % N_ACCOUNTS;
@@ -89,7 +101,6 @@ main()
 
         if (tx->status == 4)
         {
-            // We break out of previous loop because of an abort
             continue;
         }
         
