@@ -10,6 +10,14 @@
 #define TYPE
 #endif
 
+#ifdef LT_IN_MRAM
+#define TYPE_LT __mram_ptr
+#define TYPE_LT_DEF __mram
+#else
+#define TYPE_LT
+#define TYPE_LT_DEF
+#endif
+
 #ifdef DATA_IN_MRAM
 #define TYPE_ACC __mram_ptr
 #else
@@ -26,7 +34,7 @@ typedef uintptr_t stm_word_t;
 
 typedef struct r_entry
 {
-    volatile stm_word_t *lock; /* Pointer to lock (for fast access) */
+    volatile TYPE_LT stm_word_t *lock; /* Pointer to lock (for fast access) */
     uint8_t dropped;
 } r_entry_t;
 
@@ -38,7 +46,7 @@ typedef struct r_set
 
 typedef struct w_entry
 {
-    volatile stm_word_t *lock;          /* Pointer to lock (for fast access) */
+    volatile TYPE_LT stm_word_t *lock;          /* Pointer to lock (for fast access) */
     volatile TYPE_ACC stm_word_t *addr; /* Address written */
     stm_word_t value;                   /* New (write-back) value */
     TYPE struct w_entry *next;          /* Next address covered by same lock */

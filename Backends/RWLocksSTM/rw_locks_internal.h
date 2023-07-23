@@ -8,7 +8,7 @@
 
 #include "atomic.h"
 
-#define LOCK_ARRAY_LOG_SIZE 10
+#define LOCK_ARRAY_LOG_SIZE 20
 
 enum
 {
@@ -33,7 +33,7 @@ enum
 #define LOCK_SHIFT_EXTRA 0
 #define LOCK_SHIFT ((sizeof(stm_word_t) == 4 ? 2 : 3) + LOCK_SHIFT_EXTRA)
 #define LOCK_IDX(a) (((stm_word_t)(a) >> LOCK_SHIFT) & LOCK_MASK)
-#define GET_LOCK_ADDR(a) (lock_table + LOCK_IDX(a))
+#define GET_LOCK_ADDR(a) (&(lock_table[LOCK_IDX(a)].lock))
 
 #define READ_BITS 1
 #define WRITE_BITS 1
@@ -58,12 +58,18 @@ enum
     (((LOCK_GET_N_READERS(l) - 1) << LOCK_FLAG_BITS) |                                   \
      ((l & 0x3FFFFFC) & ~(0x01 << (LOCK_BITS + id))) | READ_MASK)
 
-#define LOCK_GET_OWNED_WRITE(l) ((l)&WRITE_MASK)
+#define LOCK_GET_OWNED_WRITE(l) ((l) & WRITE_MASK)
 #define LOCK_SET_ADDR_WRITE(a) ((a) | WRITE_MASK)
 
 #define LOCK_GET_W_ENTRY(l) ((l) & ~(stm_word_t)(READ_MASK | WRITE_MASK))
 
-extern volatile stm_word_t lock_table[LOCK_ARRAY_SIZE];
+typedef struct 
+{
+    stm_word_t lock;
+    uint32_t padding;  
+} lock_entry_t;
+
+lock_entry_t TYPE_LT_DEF lock_table[LOCK_ARRAY_SIZE];
 
 static void
 stm_rollback(TYPE stm_tx *tx);

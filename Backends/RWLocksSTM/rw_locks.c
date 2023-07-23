@@ -1,11 +1,10 @@
 #include <assert.h>
 #include <perfcounter.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "rw_locks.h"
 #include "rw_locks_internal.h"
-
-volatile stm_word_t lock_table[LOCK_ARRAY_SIZE];
 
 void
 stm_init(TYPE stm_tx *tx, int tid)
@@ -28,6 +27,8 @@ stm_init(TYPE stm_tx *tx, int tid)
     tx->start_validation = 0;
     tx->retries = 0;
     tx->aborts = 0;
+
+    memset(lock_table, 0, sizeof(lock_table));
 }
 
 void

@@ -32,7 +32,7 @@ stm_init(TYPE struct stm_tx *tx, int tid)
     tx->retries = 0;
     tx->abort_cycles = 0;
 
-    memset(&_tinystm, 0, sizeof(_tinystm.locks));
+    memset(&_tinystm, 0, sizeof(_tinystm));
 }
 
 void

@@ -23,6 +23,10 @@ ifdef TX_IN_MRAM
 	DEFINES += -DTX_IN_MRAM
 endif
 
+ifdef LT_IN_MRAM
+	DEFINES += -DLT_IN_MRAM
+endif
+
 ifdef DATA_IN_MRAM
 	DEFINES += -DDATA_IN_MRAM
 endif

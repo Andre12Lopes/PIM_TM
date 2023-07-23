@@ -47,7 +47,7 @@ stm_wbetl_rollback(TYPE stm_tx *tx)
 }
 
 static inline TYPE r_entry_t *
-stm_has_read_lock(TYPE stm_tx *tx, volatile stm_word_t *lock)
+stm_has_read_lock(TYPE stm_tx *tx, volatile TYPE_LT stm_word_t *lock)
 {
     TYPE r_entry_t *r;
 
@@ -66,7 +66,7 @@ stm_has_read_lock(TYPE stm_tx *tx, volatile stm_word_t *lock)
 static inline stm_word_t
 stm_wbetl_read(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
 {
-    volatile stm_word_t *lock = NULL;
+    volatile TYPE_LT stm_word_t *lock = NULL;
     TYPE r_entry_t *r = NULL;
     TYPE w_entry_t *w = NULL;
     stm_word_t lock_value;
@@ -142,7 +142,7 @@ stm_wbetl_read(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
 static inline TYPE w_entry_t *
 stm_wbetl_write(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr, stm_word_t value)
 {
-    volatile stm_word_t *lock = NULL;
+    volatile TYPE_LT stm_word_t *lock = NULL;
     TYPE r_entry_t *r = NULL;
     TYPE w_entry_t *w = NULL;
     TYPE w_entry_t *prev = NULL;
