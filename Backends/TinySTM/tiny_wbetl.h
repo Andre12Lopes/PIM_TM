@@ -163,31 +163,31 @@ restart_no_load:
             goto restart_no_load;
         }
 
-        version = LOCK_GET_TIMESTAMP(l);
+        // version = LOCK_GET_TIMESTAMP(l);
 
-        /* Valid version? */
-        if (version > tx->end)
-        {
-            /* No: try to extend first (except for read-only transactions: no read set) */
-            if (tx->read_only || !stm_wbetl_extend(tx))
-            {
-                /* Not much we can do: abort */
-                stm_rollback(tx, STM_ABORT_VAL_READ);
+        // /* Valid version? */
+        // if (version > tx->end)
+        // {
+        //     /* No: try to extend first (except for read-only transactions: no read set) */
+        //     if (tx->read_only || !stm_wbetl_extend(tx))
+        //     {
+        //         /* Not much we can do: abort */
+        //         stm_rollback(tx, STM_ABORT_VAL_READ);
 
-                return 0;
-            }
+        //         return 0;
+        //     }
 
-            /* Verify that version has not been overwritten (read value has not
-             * yet been added to read set and may have not been checked during
-             * extend) */
-            l2 = ATOMIC_LOAD_LOCK(lock);
-            if (l != l2)
-            {
-                l = l2;
-                goto restart_no_load;
-            }
-            /* Worked: we now have a good version (version <= tx->end) */
-        }
+        //     /* Verify that version has not been overwritten (read value has not
+        //      * yet been added to read set and may have not been checked during
+        //      * extend) */
+        //     l2 = ATOMIC_LOAD_LOCK(lock);
+        //     if (l != l2)
+        //     {
+        //         l = l2;
+        //         goto restart_no_load;
+        //     }
+        //     /* Worked: we now have a good version (version <= tx->end) */
+        // }
     }
 
     /* We have a good version: add to read set (update transactions) and return value */
@@ -281,7 +281,7 @@ restart_no_load:
 
             /* Get version from previous write set entry (all entries in linked list have
              * same version) */
-            version = prev->version;
+            // version = prev->version;
 
             /* Must add to write set */
             if (tx->w_set.nb_entries == tx->w_set.size)
@@ -298,20 +298,20 @@ restart_no_load:
     }
     /* Not locked */
     /* Handle write after reads (before CAS) */
-    version = LOCK_GET_TIMESTAMP(l);
+    // version = LOCK_GET_TIMESTAMP(l);
     ATOMIC_B_WRITE;
 acquire:
-    if (version > tx->end)
-    {
-        /* We might have read an older version previously */
-        if (stm_has_read(tx, lock) != NULL)
-        {
-            /* Read version must be older (otherwise, tx->end >= version) */
-            /* Not much we can do: abort */
-            stm_rollback(tx, STM_ABORT_VAL_WRITE);
-            return NULL;
-        }
-    }
+    // if (version > tx->end)
+    // {
+    //     /* We might have read an older version previously */
+    //     if (stm_has_read(tx, lock) != NULL)
+    //     {
+    //         /* Read version must be older (otherwise, tx->end >= version) */
+    //         /* Not much we can do: abort */
+    //         stm_rollback(tx, STM_ABORT_VAL_WRITE);
+    //         return NULL;
+    //     }
+    // }
 
     /* Acquire lock (ETL) */
     if (tx->w_set.nb_entries == tx->w_set.size)
