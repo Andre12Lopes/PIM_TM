@@ -160,6 +160,7 @@ stm_wtetl_read(TYPE stm_tx_t *tx, volatile TYPE_ACC stm_word_t *addr)
 restart_no_load:
     if (!LOCK_GET_WRITE(l1))
     {
+    	tx->start_xyz = perfcounter_config(COUNT_CYCLES, false);
         /* Address not locked */
         value = ATOMIC_LOAD_VALUE_MRAM(addr);
         l2 = ATOMIC_LOAD_LOCK(lock_addr);
@@ -169,8 +170,9 @@ restart_no_load:
             l1 = l2;
             goto restart_no_load;
         }
-
-        version = LOCK_GET_TIMESTAMP(l1);
+ 
+	
+	version = LOCK_GET_TIMESTAMP(l1);
 
         stm_wtetl_add_to_rs(tx, version, lock_addr);
 
@@ -186,6 +188,8 @@ restart_no_load:
             }
             /* Worked: we now have a good version (version <= tx->end) */
         }
+
+    	tx->xyz += perfcounter_get() - tx->start_xyz;
 
         return value;
     }

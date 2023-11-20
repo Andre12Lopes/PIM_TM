@@ -89,7 +89,8 @@ stm_wtetl_read(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
         stm_rollback(tx);
         return 0;
     }
-
+  
+    tx->start_xyz = perfcounter_config(COUNT_CYCLES, false);
     if (LOCK_GET_OWNED_READ(lock_value))
     {
         // TODO...
@@ -110,10 +111,12 @@ stm_wtetl_read(TYPE stm_tx *tx, volatile TYPE_ACC stm_word_t *addr)
     hardware_release_lock(lock);
 
     assert(tx->r_set.nb_entries < R_SET_SIZE);
-
+ 
     r = &tx->r_set.entries[tx->r_set.nb_entries++];
     r->lock = lock;
     r->dropped = 0;
+
+    tx->xyz += perfcounter_get() - tx->start_xyz;
 
     return *addr;
 }

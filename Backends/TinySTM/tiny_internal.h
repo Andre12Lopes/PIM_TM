@@ -9,7 +9,7 @@
 #include "atomic.h"
 #include "utils.h"
 
-#define LOCK_ARRAY_LOG_SIZE 20
+#define LOCK_ARRAY_LOG_SIZE 8
 
 #define OWNED_BITS 1       /* 1 bit */
 #define INCARNATION_BITS 3 /* 3 bits */
@@ -172,6 +172,7 @@ int_stm_prepare(TYPE stm_tx_t *tx)
     tx->read_cycles = 0;
     tx->write_cycles = 0;
     tx->validation_cycles = 0;
+    tx->xyz = 0;
 
     /* Start timestamp */
     tx->start = tx->end = GET_CLOCK; /* OPT: Could be delayed until first read/write */
@@ -298,6 +299,7 @@ int_stm_commit(TYPE stm_tx_t *tx)
     tx->total_read_cycles += tx->read_cycles;
     tx->total_write_cycles += tx->write_cycles;
     tx->total_validation_cycles += tx->validation_cycles;
+    tx->total_xyz += tx->xyz;
 
     tx->start_time = 0;
     tx->retries = 0;

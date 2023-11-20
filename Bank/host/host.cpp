@@ -13,6 +13,7 @@ main()
 
     std::vector<std::vector<uint32_t>> nbProcessCycles(1);
     std::vector<std::vector<uint32_t>> nbProcessReadCycles(1);
+    std::vector<std::vector<uint32_t>> nbXyz(1);
     std::vector<std::vector<uint32_t>> nbProcessWriteCycles(1);
     std::vector<std::vector<uint32_t>> nbProcessValidationCycles(1);
 
@@ -44,9 +45,12 @@ main()
         dpu.copy(nbProcessCycles, "nb_process_cycles");
 
         nbProcessReadCycles.front().resize(1);
-        dpu.copy(nbProcessReadCycles, "nb_process_read_cycles");
-
-        nbProcessWriteCycles.front().resize(1);
+	dpu.copy(nbProcessReadCycles, "nb_process_read_cycles");
+	
+	nbXyz.front().resize(1);
+        dpu.copy(nbXyz, "nb_xyz");
+        
+	nbProcessWriteCycles.front().resize(1);
         dpu.copy(nbProcessWriteCycles, "nb_process_write_cycles");
 
         nbProcessValidationCycles.front().resize(1);
@@ -88,11 +92,12 @@ main()
                   << ((double)aborts * 100) / (aborts + nTransactions.front().front())
                   << "\t" << process_read_time - process_validation_time << "\t"
                   << process_write_time << "\t" << process_validation_time << "\t"
-                  << process_time - (process_read_time + process_write_time +
-                                     process_validation_time)
+                  << process_time
                   << "\t" << commit_validation_time << "\t"
                   << commit_time - commit_validation_time << "\t" << wasted_time
                   << std::endl;
+    
+	std::cout << (double)nbXyz.front().front() / clocksPerSec.front().front() << std::endl;
     }
     catch (const DpuError &e)
     {

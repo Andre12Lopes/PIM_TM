@@ -25,10 +25,10 @@
 #endif
 
 /* Initial size of read sets */
-#define R_SET_SIZE 300
+#define R_SET_SIZE 2
 
 /* Initial size of write sets */
-#define W_SET_SIZE 300
+#define W_SET_SIZE 2
 
 typedef uintptr_t stm_word_t;
 
@@ -82,6 +82,7 @@ typedef struct stm_tx
     perfcounter_t start_read;
     perfcounter_t start_write;
     perfcounter_t start_validation;
+    perfcounter_t start_xyz;
     uint32_t process_cycles;
     uint32_t read_cycles;
     uint32_t write_cycles;
@@ -93,6 +94,8 @@ typedef struct stm_tx
     uint32_t commit_cycles;
     uint32_t total_cycles;
     uint32_t abort_cycles;
+    uint32_t xyz;
+    uint32_t total_xyz;
 } stm_tx_t;
 
 enum

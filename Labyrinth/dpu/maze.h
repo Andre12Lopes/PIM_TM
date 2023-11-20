@@ -62,11 +62,18 @@ grid_copy(__mram_ptr grid_t *dstGridPtr, __mram_ptr grid_t *srcGridPtr)
     memcpy(dstGridPtr->points, srcGridPtr->points, sizeof(dstGridPtr->points));
 }
 
+/*
 __mram_ptr grid_point_t *
 grid_get_point_ref(__mram_ptr grid_t *gridPtr, long x, long y, long z)
 {
     return &(gridPtr->points[(z * gridPtr->height * gridPtr->width) +
                              ((x * gridPtr->width) + y)]);
+}
+*/
+__mram_ptr grid_point_t *
+grid_get_point_ref(__mram_ptr grid_t *gridPtr, long x, long y, long z)
+{
+    return &(gridPtr->points[(z << 14) + ((x << 7) + y)]);
 }
 
 void
@@ -76,6 +83,7 @@ grid_set_point(__mram_ptr grid_t *gridPtr, long x, long y, long z, int value)
     mram_write(&point, grid_get_point_ref(gridPtr, x, y, z), sizeof(grid_point_t));
 }
 
+/*
 void
 grid_get_point_indices(__mram_ptr grid_t *gridPtr, __mram_ptr grid_point_t *gridPointPtr,
                        long *xPtr, long *yPtr, long *zPtr)
@@ -85,6 +93,16 @@ grid_get_point_indices(__mram_ptr grid_t *gridPtr, __mram_ptr grid_point_t *grid
     (*zPtr) = index / area;
     (*yPtr) = index % gridPtr->width;
     (*xPtr) = (index / gridPtr->height) % gridPtr->height;
+}
+*/
+void
+grid_get_point_indices(__mram_ptr grid_t *gridPtr, __mram_ptr grid_point_t *gridPointPtr,
+                       long *xPtr, long *yPtr, long *zPtr)
+{
+    long index = (gridPointPtr - gridPtr->points);
+    (*zPtr) = index >> 14;
+    (*yPtr) = index & 127;
+    (*xPtr) = (index >> 7) & 127;
 }
 
 // int

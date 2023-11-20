@@ -39,7 +39,7 @@ Tx __mram_noinit tx_mram[NR_TASKLETS];
 Tx tx_wram[NR_TASKLETS];
 #endif
 
-uint32_t __mram_noinit arr[2500];
+//uint32_t __mram_noinit arr[2500];
 
 void
 initialize_accounts();
@@ -76,7 +76,7 @@ main()
 
         for (int j = 0; j < 0; ++j)
         {
-            TM_LOAD_LOOP(tx, &arr[(tid * 100) + i]);
+            //TM_LOAD_LOOP(tx, &arr[(tid * 100) + i]);
         }
 
         if (tx->status == 4)
@@ -84,7 +84,7 @@ main()
             continue;
         }
 
-        for (int j = 0; j < 2; ++j)
+        for (int j = 0; j < 1; ++j)
         {
             ra = RAND_R_FNC(s) % N_ACCOUNTS;
             rb = RAND_R_FNC(s) % N_ACCOUNTS;

@@ -74,6 +74,7 @@ typedef struct _stm_tx
     perfcounter_t start_read;
     perfcounter_t start_write;
     perfcounter_t start_validation;
+    perfcounter_t start_xyz;
     uint32_t process_cycles;
     uint32_t read_cycles;
     uint32_t write_cycles;
@@ -84,6 +85,8 @@ typedef struct _stm_tx
     uint32_t total_commit_validation_cycles;
     uint32_t commit_cycles;
     uint32_t total_cycles;
+    uint32_t xyz;
+    uint32_t total_xyz;
 } stm_tx;
 
 void

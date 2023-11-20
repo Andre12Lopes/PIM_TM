@@ -13,6 +13,7 @@ __host uint32_t nb_commit_validation_cycles;
 __host uint32_t nb_wasted_cycles;
 __host uint32_t n_aborts;
 __host uint32_t n_trans;
+__host uint32_t nb_xyz;
 
 void
 start_count(int tid)
@@ -43,6 +44,7 @@ get_metrics(TYPE Tx *tx, int tid)
         nb_process_write_cycles = 0;
         nb_process_validation_cycles = 0;
         nb_commit_validation_cycles = 0;
+        nb_xyz = 0;
     }
 
     for (int i = 0; i < NR_TASKLETS; ++i)
@@ -67,7 +69,11 @@ get_metrics(TYPE Tx *tx, int tid)
 
             nb_wasted_cycles +=
                 ((double)(tx->total_cycles - (tx->process_cycles + tx->commit_cycles)) /
-                 (N_TRANSACTIONS * NR_TASKLETS));
+                 (N_TRANSACTIONS * NR_TASKLETS)); 
+	    
+	    nb_xyz +=
+                ((double)tx->total_xyz / (N_TRANSACTIONS * NR_TASKLETS));
+
         }
 
         barrier_wait(&my_barrier);

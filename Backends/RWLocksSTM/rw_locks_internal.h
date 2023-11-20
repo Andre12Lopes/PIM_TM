@@ -152,6 +152,7 @@ int_stm_start(TYPE stm_tx *tx)
     tx->read_cycles = 0;
     tx->write_cycles = 0;
     tx->validation_cycles = 0;
+    tx->xyz = 0;
 
     UPDATE_STATUS(tx->status, TX_ACTIVE);
 }
@@ -260,6 +261,7 @@ int_stm_commit(TYPE stm_tx *tx)
     tx->total_read_cycles += tx->read_cycles;
     tx->total_write_cycles += tx->write_cycles;
     tx->total_validation_cycles += tx->validation_cycles;
+    tx->total_xyz += tx->xyz;
 
     tx->start_time = 0;
     tx->retries = 0;

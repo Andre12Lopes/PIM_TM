@@ -27,6 +27,7 @@ stm_init(TYPE stm_tx *tx, int tid)
     tx->start_validation = 0;
     tx->retries = 0;
     tx->aborts = 0;
+    tx->total_xyz = 0;
 
     memset(lock_table, 0, sizeof(lock_table));
 }
